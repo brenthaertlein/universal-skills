@@ -1,0 +1,93 @@
+# Core — Universal Workflow Skills
+
+Stack-agnostic workflow skills for Claude Code. Works with any language, framework, or project type.
+
+## Skills
+
+### Workflow
+| Skill | Command | Description |
+|-------|---------|-------------|
+| commit | `/commit` | Preflight checks + commit. Does not push. |
+| ship-it | `/ship-it` | Full pipeline: commit → push → PR → follow-ups |
+| checkout | `/checkout <branch>` | Create a worktree for an existing branch |
+| cleanup | `/cleanup` | Remove worktrees for merged branches |
+| debug | `/debug <description>` | Senior-engineer debugging: evidence first, fix last |
+| pr-fix | `/pr-fix` | Triage PR review comments, classify, and fix |
+
+### Planning
+| Skill | Command | Description |
+|-------|---------|-------------|
+| start-work | `/start-work <issue>` | Research → plan → implement from an issue or doc |
+| whats-next | `/whats-next` | Recommend your next task based on issues and history |
+| project-status | `/project-status` | Dashboard of PRs, issues, and branches |
+
+### Documentation
+| Skill | Command | Description |
+|-------|---------|-------------|
+| pr-description | `/pr-description` | Generate structured PR description from branch diff |
+| document | `/document [issue/feature]` | Create/update feature and issue docs |
+| improve-issues | `/improve-issues` | Enrich GitHub issues with context and labels |
+
+### Meta
+| Skill | Command | Description |
+|-------|---------|-------------|
+| skills-review | `/skills-review` | Audit skills for overlap, gaps, and consistency |
+
+## Setup
+
+Run `/setup` to automatically configure recommended permissions, or manually add to `.claude/settings.json`:
+
+```json
+{
+  "permissions": {
+    "allow": [
+      "Bash(git log*)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git show*)",
+      "Bash(git fetch*)",
+      "Bash(git branch --show-current*)",
+      "Bash(git branch -a*)",
+      "Bash(git branch --list*)",
+      "Bash(git stash list*)",
+      "Bash(git stash show*)",
+      "Bash(git worktree list*)",
+      "Bash(gh pr view*)",
+      "Bash(gh pr list*)",
+      "Bash(gh pr checks*)",
+      "Bash(gh pr diff*)",
+      "Bash(gh pr status*)",
+      "Bash(gh run view*)",
+      "Bash(gh run list*)",
+      "Bash(gh issue list*)",
+      "Bash(gh issue view*)",
+      "Bash(gh repo view*)",
+      "Bash(gh api repos/*/pulls/*/reviews*)",
+      "Bash(gh search issues*)",
+      "Bash(gh search prs*)",
+      "Write(.claude/plans/*)",
+      "Edit(.claude/plans/*)"
+    ]
+  }
+}
+```
+
+Operations that modify state (commit, push, merge, PR create, issue edit, branch create) are intentionally excluded — you'll be prompted for approval each time.
+
+## Companion Plugins
+
+### Sibling plugins (same repo)
+
+| Plugin | What it adds |
+|--------|-------------|
+| **infra** | IaC preflight checks (Terraform, Ansible, K8s, Helm, Docker Compose), security scanning, infra service recommendations |
+| **webapp** | Web app preflight (lint, typecheck, tests), code review skills, testing tools, library recommendations |
+
+Core works standalone, but `/commit` and `/ship-it` run richer preflight checks when a domain plugin is installed.
+
+### Public plugins
+
+| Plugin | Integration |
+|--------|-------------|
+| **superpowers** | `start-work` invokes `brainstorming` for open-ended tasks. `commit` is complemented by `verification-before-completion`. `debug` invokes `systematic-debugging` for methodology. `ship-it` dispatches `requesting-code-review` after PR creation. |
+| **code-simplifier** | Autonomous post-edit refinement — runs after code changes to improve clarity and consistency. Complements the manual review skills. |

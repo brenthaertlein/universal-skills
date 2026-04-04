@@ -1,0 +1,48 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\" 2>/dev/null; then BRANCH=$(git branch --show-current 2>/dev/null); if [ \"$BRANCH\" = \"main\" ] || [ \"$BRANCH\" = \"master\" ]; then echo \"[branch-guard] Cannot commit to main/master. Create a feature branch first.\" && exit 2; fi; fi'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_FILE_PATHS\" | grep -q \"\\.test\\.\" 2>/dev/null; then echo \"[test-quality] Test file modified. Run /test-quality to review.\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_FILE_PATHS\" | tr \" \" \"\\n\" | grep -qE \"\\.tsx?$\" 2>/dev/null && echo \"$CLAUDE_FILE_PATHS\" | tr \" \" \"\\n\" | grep -E \"\\.tsx?$\" | grep -qvE \"(\\.test\\.|schema/|types/|\\.d\\.ts$)\" 2>/dev/null; then echo \"[best-practices] Source file modified. Apply /best-practices patterns: functional style, single-responsibility components, no any, named exports, early returns.\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_FILE_PATHS\" | grep -qE \"(schema|models|entities)\" 2>/dev/null; then echo \"[migration-review] Schema file modified. Run /migration-review to check if a migration is needed.\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_FILE_PATHS\" | grep -qE \"(api|routes|controllers|endpoints)\" 2>/dev/null; then echo \"[api-review] API route modified. Verify: auth applied, input validated, error responses consistent.\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_FILE_PATHS\" | tr \" \" \"\\n\" | grep -qE \"\\.(tsx?|css)$\" 2>/dev/null; then FILES=$(echo \"$CLAUDE_FILE_PATHS\" | tr \" \" \"\\n\" | grep -E \"\\.(tsx?|css)$\" | grep -v \"\\.test\\.\"); if [ -n \"$FILES\" ]; then VIOLATIONS=$(echo \"$FILES\" | xargs grep -lE \"(text|bg|border|ring|divide)-\\[#|(text|bg|border)-\\[rgba\\(\" 2>/dev/null); if [ -n \"$VIOLATIONS\" ]; then echo \"[theme-review] Inline hex color detected in: $VIOLATIONS. Use semantic design tokens. Run /theme-review for details.\"; fi; fi; fi'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

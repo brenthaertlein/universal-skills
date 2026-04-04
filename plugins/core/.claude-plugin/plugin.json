@@ -1,0 +1,8 @@
+{
+  "name": "core",
+  "version": "1.0.0",
+  "description": "Universal workflow skills for Claude Code — commit, ship, plan, debug, review. Stack-agnostic foundations that work with any project.",
+  "author": {
+    "name": "Brent Haertlein"
+  }
+}

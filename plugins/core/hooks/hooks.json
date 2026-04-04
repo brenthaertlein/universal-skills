@@ -1,0 +1,51 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git push\" 2>/dev/null; then echo \"[git-push-guard] git push is never auto-allowed. The user must explicitly request a push or run /ship-it.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git branch.*-D|git branch.*--delete.*--force|git branch.*--force.*--delete\" 2>/dev/null; then echo \"[branch-protection] git branch -D (force delete) is blocked. Use git branch -d (safe delete) or ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git reset\" 2>/dev/null; then echo \"[reset-guard] git reset is blocked. This can destroy uncommitted work. Ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git checkout -- |git checkout \\\\.|git restore [^-]|git restore \\\\.\\\\.\" 2>/dev/null; then echo \"[restore-guard] git checkout -- and git restore discard uncommitted changes permanently. Ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git clean\" 2>/dev/null; then echo \"[clean-guard] git clean deletes untracked files permanently. Ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\" 2>/dev/null && echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"\\-\\-amend\" 2>/dev/null; then echo \"[amend-guard] git commit --amend is blocked. Create a new commit instead.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git stash drop|git stash clear\" 2>/dev/null; then echo \"[stash-guard] git stash drop/clear permanently deletes stashed work. Ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git worktree remove.*--force|git worktree remove.*-f\" 2>/dev/null; then echo \"[worktree-guard] git worktree remove --force is blocked. Use without --force or ask the user for explicit approval.\" && exit 2; fi'",
+            "timeout": 5000
+          }
+        ]
+      }
+    ]
+  }
+}

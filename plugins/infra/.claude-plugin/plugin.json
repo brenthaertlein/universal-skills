@@ -1,0 +1,8 @@
+{
+  "name": "infra",
+  "version": "1.0.0",
+  "description": "Infrastructure and DevOps skills for Claude Code — IaC validation, security auditing. For Terraform, Ansible, Kubernetes, Helm, and Docker Compose projects.",
+  "author": {
+    "name": "Brent Haertlein"
+  }
+}
