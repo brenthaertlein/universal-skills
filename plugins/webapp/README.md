@@ -2,6 +2,24 @@
 
 Skills for modern web application development. Optimized for Next.js full-stack development (React, TypeScript, Drizzle ORM, Playwright), but patterns are applicable to other web stacks.
 
+## Agents
+
+| Agent | Description |
+|-------|-------------|
+| `principal-frontend` | Principal-level TypeScript / Node.js / Next.js / React reviewer. Dispatch via `Agent({subagent_type: "principal-frontend"})` from skills needing senior architectural scrutiny — server/client boundary, data-fetching strategy, rendering tradeoffs, accessibility, performance budget. Also invocable directly via `/agents`. |
+
+### How skills use the agent
+
+Dispatch to `principal-frontend` when a review needs senior judgment rather than a line-level checklist:
+
+- `architecture-review` — server/client boundary correctness, import direction, rendering strategy
+- `api-review` — type-safety at the boundary, error-handling architecture
+- `best-practices` — composition and hook discipline decisions
+- `security-review` — XSS sinks and auth posture at scale
+- `migration-review` — migration safety and two-phase deploy reasoning
+
+The skill owns the output format; the agent provides the reasoning lens.
+
 ## Skills
 
 ### Quality Gates

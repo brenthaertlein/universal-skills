@@ -54,6 +54,19 @@ Review changed code for adherence to modern web development best practices.
 - No duplicate logic. Flag copy-pasted blocks of 5+ lines.
 - Imports should be organized (framework, external, internal, types).
 
+### Senior Review
+
+Dispatch to the `principal-frontend` subagent with the line-level findings collected above. Ask it to apply its senior lens — composition over configuration, hook discipline, when `useEffect` is a smell — to the findings. Integrate its top findings into the Report Format below; do not replace the skill's verdict contract.
+
+Invocation:
+```
+Agent({
+  subagent_type: "principal-frontend",
+  description: "Best-practices senior review",
+  prompt: "Review these best-practice findings: <summary of style, SRP, type-safety, naming, error-handling, and hygiene findings>. Apply senior scrutiny to composition over configuration, hook discipline, and cases where useEffect is a smell hiding a deeper design issue. Return top design risks in severity order."
+})
+```
+
 ## Report Format
 
 For each file, list findings as `[WARN]` with the specific line and suggestion. Provide a summary count at the end.

@@ -6,7 +6,22 @@
         "hooks": [
           {
             "type": "command",
-            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -q \"git commit\" 2>/dev/null; then echo \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"REMINDER: Run /security-audit before committing infrastructure code. If already completed this session, proceed.\\\"}}\"; fi'",
+            "command": "bash -c 'input=\"$CLAUDE_TOOL_INPUT\"; if echo \"$input\" | grep -qE \"git commit\"; then msg=\"REMINDER: Run /security-audit before committing infrastructure code. If staged changes include *.tf, kustomization.yaml, helm charts, or Ansible roles, also run /preflight and /assess-change-risk. If already completed this session, proceed.\"; printf \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"%s\\\"}}\" \"$msg\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'input=\"$CLAUDE_TOOL_INPUT\"; if echo \"$input\" | grep -qE \"terraform (apply|destroy)\"; then msg=\"SAFEGUARD: terraform apply/destroy is mutating. If you have not already: run /assess-change-risk on the plan first, confirm drift is understood (/review-drift), and verify this has been rehearsed in a lower environment.\"; printf \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"%s\\\"}}\" \"$msg\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'input=\"$CLAUDE_TOOL_INPUT\"; if echo \"$input\" | grep -qE \"kubectl (apply|delete|patch|replace|scale|rollout)\"; then msg=\"SAFEGUARD: kubectl mutating operation detected. Confirm the target context is intended (kubectl config current-context) and that blast radius is understood.\"; printf \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"%s\\\"}}\" \"$msg\"; fi'",
+            "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'input=\"$CLAUDE_TOOL_INPUT\"; if echo \"$input\" | grep -qE \"ansible-playbook\" && ! echo \"$input\" | grep -qE -- \"--check\"; then msg=\"SAFEGUARD: ansible-playbook without --check will mutate hosts. Run with --check --diff first to review, or confirm this is the intended apply.\"; printf \"{\\\"hookSpecificOutput\\\":{\\\"hookEventName\\\":\\\"PreToolUse\\\",\\\"additionalContext\\\":\\\"%s\\\"}}\" \"$msg\"; fi'",
             "timeout": 5000
           }
         ]

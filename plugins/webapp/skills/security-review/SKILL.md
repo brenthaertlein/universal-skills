@@ -62,6 +62,19 @@ Review web application code for security vulnerabilities.
 - Flag known vulnerable package patterns if detected in lock files.
 - Suggest running `npm audit` / `pip audit` / equivalent if not part of CI.
 
+### Senior Review
+
+Dispatch to the `principal-frontend` subagent with the findings collected above. Ask it to apply its senior lens — XSS sinks, CSP posture, auth cookie flags, secret exposure in the client bundle — to the findings. Integrate its top findings into the Report Format below using the severity scale defined next; do not replace the skill's verdict contract.
+
+Invocation:
+```
+Agent({
+  subagent_type: "principal-frontend",
+  description: "Security senior review",
+  prompt: "Review these security findings: <summary of XSS, CSRF, SQLi, authn/z, data-exposure, CORS, rate-limit, and dependency findings>. Apply senior scrutiny to XSS sinks reachable via user input, CSP posture, auth cookie flags (httpOnly/secure/sameSite), and any secret/PII exposure in the client bundle. Return top security risks in severity order."
+})
+```
+
 ## Severity Levels
 
 - **[CRITICAL]**: Exploitable vulnerability (SQL injection, auth bypass, credential exposure).
