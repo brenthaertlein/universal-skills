@@ -76,6 +76,19 @@ Each API route file should have a corresponding test file.
 - **WARN**: Test file exists but only tests the happy path (no error cases).
 - **PASS**: Test file covers happy path, validation errors, auth failures, and edge cases.
 
+### 7. Senior Review
+
+Dispatch to the `principal-frontend` subagent with the analysis from the prior checks. Ask it to apply its senior lens — type discipline at the boundary, error-handling architecture, auth contract — to the findings. Integrate its top findings into the Report Format below; do not replace the skill's verdict contract.
+
+Invocation:
+```
+Agent({
+  subagent_type: "principal-frontend",
+  description: "API route senior review",
+  prompt: "Review these API route findings: <summary of auth, validation, error shape, HTTP, typing, and coverage findings from checks 1-6>. Apply senior scrutiny to type discipline at the request/response boundary, error-handling architecture across the route surface, and the auth contract. Return top architectural risks in severity order."
+})
+```
+
 ## Report Format
 
 ```

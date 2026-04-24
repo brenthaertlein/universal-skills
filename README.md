@@ -1,6 +1,6 @@
 # Claude Code Plugins
 
-Battle-tested Claude Code skills extracted from real projects, generalized for any codebase.
+Battle-tested Claude Code plugins extracted from real projects, generalized for any codebase. Each plugin ships skills, agents, commands, hooks, and shared helper scripts — wired to work together out of the box.
 
 ## Plugins
 
@@ -10,23 +10,50 @@ Stack-agnostic skills for commit workflows, project planning, debugging, PR mana
 
 **13 skills:** commit, ship-it, start-work, whats-next, project-status, pr-description, skills-review, debug, pr-fix, document, improve-issues, cleanup, checkout
 
-### `infra` — Infrastructure & DevOps
+### `infra` — Enterprise Infrastructure & DevOps
 
-Skills for infrastructure-as-code projects using Terraform, Ansible, Kubernetes, Helm, and Docker Compose.
+For sysadmins, DevOps engineers, and SREs operating across AWS, GCP, Kubernetes, and baremetal/on-prem. Covers IaC validation, drift / cost / vulnerability triage, cloud IAM and Well-Architected reviews, postmortems and runbooks, and baremetal hardening. All skills are **read-only** — mutating operations always require approval.
 
-**3 skills:** preflight, security-audit, suggest
+- **23 skills** grouped as:
+  - **Foundations:** `preflight`, `security-audit`, `suggest`, `infra-inventory`
+  - **Cross-cutting:** `review-drift`, `review-costs`, `triage-vulnerabilities`, `draft-postmortem`, `draft-runbook`, `review-observability`, `assess-change-risk`, `review-disaster-recovery`
+  - **AWS:** `review-aws-iam`, `review-aws-well-architected`, `review-aws-tagging`, `triage-aws-security-findings`
+  - **GCP:** `review-gcp-iam`, `triage-gcp-recommender`, `review-gke`
+  - **Kubernetes:** `review-kubernetes-rbac`
+  - **Baremetal:** `review-linux-hardening`, `review-systemd-units`, `review-ansible-playbooks`, `triage-hardware-health`
+- **1 agent:** `principal-sre` — principal-level sysadmin / DevOps / SRE reviewer persona dispatched by 5 skills (`draft-postmortem`, `assess-change-risk`, `review-disaster-recovery`, `review-observability`, `draft-runbook`) when senior production judgment is needed.
+- **Helper scripts:** `detect-iac-scope.sh`, `cloud-auth-check.sh` — shared IaC detection and cloud-auth probing used by 12 skills.
+- **Hooks:** 4 `PreToolUse` safeguards nudging `/preflight`, `/security-audit`, `/assess-change-risk`, `/review-drift` before mutating `terraform`, `kubectl`, `helm`, or `ansible-playbook` operations.
+- **[`MINDSET.md`](plugins/infra/MINDSET.md):** import via `@plugins/infra/MINDSET.md` into a project `CLAUDE.md` to adopt enterprise infra conventions (change safety, config-as-code, secrets discipline, observability gates, production maxims).
 
 ### `webapp` — Web Application Development
 
-Skills for modern web app development, optimized for Next.js full-stack (React, TypeScript, Drizzle, Playwright). API review, architecture review, testing, coverage analysis, migration safety, and design tokens.
+For modern Next.js / TypeScript / React full-stack development (Drizzle ORM, Playwright, Vitest). API review, architecture review, testing, coverage analysis, migration safety, and design tokens.
 
-**17 skills:** preflight, api-review, architecture-review, best-practices, dba-review, security-review, docs-review, theme-review, migration-review, claude-review, branch-coverage, write-tests, e2e-spec, e2e-write, mutate, test-matrix, test-quality, drizzle-sql-migration, suggest
+- **19 skills:** preflight, api-review, architecture-review, best-practices, dba-review, security-review, docs-review, theme-review, migration-review, claude-review, branch-coverage, write-tests, e2e-spec, e2e-write, mutate, test-matrix, test-quality, drizzle-sql-migration, suggest
+- **1 agent:** `principal-frontend` — principal-level TypeScript / Next.js / React reviewer persona dispatched by 5 skills (`architecture-review`, `api-review`, `best-practices`, `security-review`, `migration-review`) when the decision is architectural rather than line-level.
+- **[`MINDSET.md`](plugins/webapp/MINDSET.md):** import via `@plugins/webapp/MINDSET.md` into a project `CLAUDE.md` to adopt type-discipline, server/client boundary, testing, accessibility, and performance conventions.
 
 ## Installation
 
 ```bash
 claude plugins install <plugin-name>
 ```
+
+Each plugin ships a `/setup` command that adds the recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are intentionally excluded and will always prompt for approval.
+
+## Adopting the MINDSET files
+
+To apply a plugin's enterprise conventions to a project, import the MINDSET file into the project's `CLAUDE.md`:
+
+```markdown
+# <project> conventions
+
+@plugins/infra/MINDSET.md
+@plugins/webapp/MINDSET.md
+```
+
+These distill principal-engineer conventions — change safety, testing discipline, server/client boundary, secrets handling, observability gates — from real production codebases, with no project-specific leakage. Override individual sections in your own `CLAUDE.md` where your org diverges.
 
 ## Recommended Combinations
 
@@ -52,7 +79,6 @@ These plugins integrate with public plugins from the Claude Code marketplace:
 ## Origin
 
 These skills were extracted from production projects and refined through hundreds of real development sessions, iterated based on actual failures and feedback.
-
 
 ## License
 

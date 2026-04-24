@@ -91,6 +91,19 @@ Database queries and ORM calls must only appear in server-side code.
 - **Prop drilling**: Flag components passing more than 5 props through without using them. Suggest context or composition.
 - **Business logic in components**: Flag complex business logic (conditionals, transformations, calculations) inline in render/template. Should be extracted to hooks or utility functions.
 
+### 6. Senior Review
+
+Dispatch to the `principal-frontend` subagent with the analysis from the prior steps. Ask it to apply its senior lens — server/client boundary, rendering strategy, import direction, file placement — to the findings. Integrate its top findings into the Report Format below; do not replace the skill's verdict contract.
+
+Invocation:
+```
+Agent({
+  subagent_type: "principal-frontend",
+  description: "Architecture senior review",
+  prompt: "Review these architectural findings: <summary of boundary, import direction, placement, and component pattern findings from steps 1-5>. Apply senior scrutiny to server/client boundary correctness, rendering strategy choices, import direction, and file placement. Return top architectural risks in severity order."
+})
+```
+
 ## Report Format
 
 ```
