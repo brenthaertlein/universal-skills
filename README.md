@@ -36,11 +36,59 @@ For modern Next.js / TypeScript / React full-stack development (Drizzle ORM, Pla
 
 ## Installation
 
+### Claude Code
+
 ```bash
 claude plugins install <plugin-name>
 ```
 
 Each plugin ships a `/setup` command that adds the recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are intentionally excluded and will always prompt for approval.
+
+### GitHub Copilot CLI
+
+**1. Register this marketplace**
+
+```bash
+copilot plugin marketplace add <owner>/<repo>
+```
+
+> **SSH auth users:** the `<owner>/<repo>` shorthand clones over HTTPS, which no longer accepts passwords — PAT/credential-helper mismatches appear as "Invalid username or token." Pass an explicit SSH URL instead:
+>
+> ```bash
+> # Remove any failed partial clone first
+> rm -rf ~/Library/Caches/copilot/marketplaces/<owner>-<repo>
+>
+> copilot plugin marketplace add ssh://git@github.com/<owner>/<repo>.git
+> ```
+>
+> Or force all GitHub clones to use SSH globally (then the shorthand works again):
+>
+> ```bash
+> git config --global url."ssh://git@github.com/".insteadOf "https://github.com/"
+> ```
+>
+> Verify SSH access first: `ssh -T git@github.com`
+
+**2. Browse available plugins**
+
+```bash
+copilot plugin marketplace list            # confirm the marketplace name
+copilot plugin marketplace browse <name>   # list plugins in this marketplace
+```
+
+**3. Install a plugin**
+
+```bash
+copilot plugin install <plugin-name>@<marketplace-name>
+```
+
+**4. Manage**
+
+```bash
+copilot plugin list
+copilot plugin update <plugin-name>
+copilot plugin uninstall <plugin-name>
+```
 
 ## Adopting the MINDSET files
 
