@@ -1,4 +1,4 @@
-# Claude Code Plugins
+# Universal Agent Skills
 
 Battle-tested Claude Code plugins extracted from real projects, generalized for any codebase. Each plugin ships skills, agents, commands, hooks, and shared helper scripts — wired to work together out of the box.
 
