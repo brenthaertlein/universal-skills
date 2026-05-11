@@ -49,6 +49,42 @@ Every test must follow **Arrange-Act-Assert**:
 - **Render-only tests**: Tests that just check a component renders without crashing. Add meaningful assertions about behavior.
 - **Shallow assertion tests**: Tests with assertions like `toBeDefined()`, `toBeTruthy()` on complex objects. Assert specific values and shapes.
 
+### Behavior-not-wiring red flags
+
+Before saving a test, scan its assertions against this table. If any apply, the test is testing wiring, not behavior — rewrite or delete it.
+
+| Red flag in your draft test | Reality |
+|---|---|
+| Asserts only on values passed in via test setup | Prop-echo: verifies the test setup, not the unit under test |
+| Mocks a dependency, calls the function, asserts the mock was called with the same args | Mock-in / mock-out: verifies wiring, not behavior |
+| Renders a component, checks an element exists, performs no interaction | Render-only: covers a line but no behavior |
+| Asserts on a CSS class string | Tests cosmetics; classes change for visual reasons |
+| Assertion only checks `toBeDefined()`, `toBeTruthy()`, or array length | Shallow assertion: catches almost no real bug |
+| Mocks `Date.now`/the clock and asserts the same `Date.now` | Tautology — tests the mock, not the code |
+| `expect(spy).toHaveBeenCalled()` with no follow-up on side effects | Verifies the call happened, not that anything correct followed |
+| Test uses `Promise.resolve()` to simulate an in-flight state | Resolves immediately; never exercises the loading/staleness window |
+
+### The behavior question
+
+Every test must answer this question — and the test name must contain the answer:
+
+> **What state change or side effect does this test verify?**
+
+If you can't write the answer in one phrase, the test is one of the anti-patterns above. Rename the test or rewrite it.
+
+Examples:
+
+- ❌ `"renders the user card"` — what behavior is verified?
+- ✅ `"shows the user's display name when the profile loads"` — state: profile loads. Behavior: name appears.
+- ❌ `"calls onSubmit"` — verifies a call happened.
+- ✅ `"submits the form once and disables the button while submitting"` — state: in-flight. Behaviors: one submit, button disabled.
+
+### Mock-state hygiene
+
+- Use a deferred promise (a promise you control with `resolve`/`reject`) when testing loading/in-flight states. `Promise.resolve()` does not exercise the window.
+- `clearAllMocks()` resets call history but does **not** reset mock implementations. To reset implementations between tests, set them in `beforeEach` or call `resetAllMocks()` / framework equivalent.
+- A fake-timer setup must be paired with a teardown (`useRealTimers()`) — leaked fake timers break unrelated tests in the same worker.
+
 ### Tests MUST Exercise:
 
 - **User interactions**: Clicks, form submissions, navigation.

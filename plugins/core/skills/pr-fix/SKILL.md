@@ -59,11 +59,28 @@ For each issue, assign:
 | **Severity** | Blocker / Warning / Suggestion | Impact if left unfixed. Blocker = bug, broken behavior, or data loss. Warning = correctness risk or code smell. Suggestion = improvement, style, or nice-to-have. |
 | **Confidence** | Unambiguous / Debatable | Whether the fix is objectively correct (Unambiguous) or a matter of opinion, tradeoff, or requires product/design input (Debatable). |
 | **Effort** | Quick / Involved | Quick = mechanical change, less than 5 min. Involved = requires thought, testing, design decisions, or touches multiple files. |
+| **Scope** | In / Out / Ambiguous | Whether the issue is in scope for the current branch's work. See **Scope classification** below. |
 
 Derive a **Recommendation** column:
-- **Fix now**: Unambiguous issues of any severity
+- **Fix now**: Unambiguous, in-scope issues of any severity
 - **Discuss**: Debatable issues at Warning or Blocker severity
 - **Optional**: Debatable suggestions or low-priority items
+- **Defer**: Out-of-scope issues regardless of severity — track separately
+
+### 3a. Scope classification
+
+If a scope contract exists for this branch (see `core/scope-statement-check`), classify each issue against it before deciding the recommendation. The contract lives at `.claude/scope/<branch>.md` and lists `In Scope`, `Out of Scope`, `Touched Surfaces`, and `Untouched Surfaces`.
+
+For each issue, decide:
+
+- **In scope** — the issue's file path is inside `Touched Surfaces` *and* the subject relates to an `In Scope` bullet
+- **Out of scope (surface)** — the file is in `Untouched Surfaces` or outside both lists
+- **Out of scope (subject)** — the file is in scope but the subject is explicitly excluded by the contract
+- **Ambiguous** — neither clearly in nor clearly out
+
+Out-of-scope issues default to **Defer** regardless of severity. The user can override case-by-case in step 5. This is the single largest source of review-cycle waste — bots and reviewers consistently flag legitimately out-of-scope work, and a contract-based default removes the keystroke cost of explaining each one.
+
+If no contract exists for the branch, skip scope classification and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
 
 ### 4. Present the matrix
 
@@ -189,34 +206,59 @@ gh api repos/{owner}/{repo}/issues/{pull_number}/comments \
 
 #### Summary comment format
 
-Use the following template. Keep the overall header and the "Merge Readiness" section. Include other sections only when they contain content (omit empty sections per the section omission rules):
+Use the following template. Every decision falls into one of five buckets. Keep the overall header, the rollup line, and the "Merge Readiness" section; omit any bucket that has no entries.
+
+The five buckets (derived from analyzing real review-cycle decisions across many merged PRs):
+
+1. **Accepted** — fixed in this PR
+2. **Rejected (pre-existing)** — flagged code is not introduced by this PR; pre-dates this change
+3. **Rejected (out-of-scope per #N)** — valid feedback but explicitly outside the issue's scope contract; tracked separately
+4. **Rejected (style)** — debatable style preference, no correctness impact
+5. **Deferred (tracked in #N)** — valid feedback, in-scope-adjacent, but resolved through a follow-up issue
 
 ```markdown
 <!-- pr-fix-summary: status report, not actionable review feedback -->
 ## Review Feedback Summary
 
-### Addressed
+**N accepted · M rejected (pre-existing) · K rejected (out-of-scope per #X) · L rejected (style) · P deferred (tracked in #Y)**
+
+### Accepted
 
 | # | Issue | File | Severity | Reviewer |
 |---|-------|------|----------|----------|
 | 1 | Description of fix | `path/file.ext#L42` | Blocker | reviewer |
-| 2 | Description of fix | `path/file.ext#L17` | Warning | reviewer |
 
-### Deferred -- Valid but Out of Scope
+### Rejected — Pre-existing
 
-Issues that are valid feedback but better tracked separately (scope, risk, or effort).
+Findings that pre-date this PR. Not introduced by these changes; addressing them would expand scope.
 
-| # | Issue | Severity | Recommendation | Track |
-|---|-------|----------|----------------|-------|
-| 1 | Brief description | Warning | Why deferred (1 sentence) | [Create issue](ISSUE_URL) |
+| # | Issue | File | Severity |
+|---|-------|------|----------|
+| 1 | Brief description | `path/file.ext#L17` | Warning |
 
-### Not Addressed -- Non-blocking Debatable / Style
+### Rejected — Out of Scope
 
-Non-blocking style preferences or low-impact debatable points. Debatable blockers and warnings belong in the Deferred section and must be discussed before merging.
+Valid feedback that falls outside the issue's scope contract. Tracked separately.
+
+| # | Issue | Severity | Scope ref | Track |
+|---|-------|----------|-----------|-------|
+| 1 | Brief description | Warning | Contract: "Out of Scope — migration changes" | [Create issue](ISSUE_URL) |
+
+### Rejected — Style
+
+Debatable style preferences with no correctness impact.
 
 | # | Issue | Severity | Reason |
 |---|-------|----------|--------|
 | 1 | Brief description | Suggestion | Style preference, no correctness impact |
+
+### Deferred — Tracked in Follow-up
+
+Valid feedback that will be addressed, but not in this PR. Each entry links to its tracking issue.
+
+| # | Issue | Severity | Why deferred | Track |
+|---|-------|----------|--------------|-------|
+| 1 | Brief description | Warning | Risk outweighs benefit at this stage | [#NNN](url) |
 
 ### Merge Readiness
 
@@ -225,6 +267,10 @@ ASSESSMENT
 ---
 *Generated by `/pr-fix`*
 ```
+
+#### Rollup line
+
+The bold line under the header is the **rollup**. Include it always — it is the line reviewers actually read. Counts must match the bucket tables exactly. Use zero-counts as `0 accepted` rather than dropping the term.
 
 #### Building issue creation links
 
@@ -254,9 +300,8 @@ If tests failed and could not be resolved, always mark as not ready regardless o
 
 #### Section omission rules
 
-- Omit "Addressed" section if nothing was fixed
-- Omit "Deferred" section if nothing was deferred
-- Omit "Not Addressed" section if nothing was skipped as debatable/style
+- Omit any of the five buckets when its count is zero
+- Always include the rollup line (zero counts shown as `0 accepted`)
 - Always include "Merge Readiness" section
 
 ## Rules
