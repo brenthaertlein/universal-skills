@@ -1,0 +1,8 @@
+{
+  "name": "infra",
+  "version": "1.2.0",
+  "description": "Enterprise infrastructure skills — IaC validation, drift/cost/vulnerability triage, cloud IAM and Well-Architected reviews (AWS, GCP, Kubernetes), and baremetal hardening.",
+  "author": {
+    "name": "Brent Haertlein"
+  }
+}
