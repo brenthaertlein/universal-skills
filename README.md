@@ -1,6 +1,8 @@
 # Universal Agent Skills
 
-Battle-tested Claude Code plugins extracted from real projects, generalized for any codebase. Each plugin ships skills, agents, commands, hooks, and shared helper scripts — wired to work together out of the box.
+Battle-tested agent plugins (Claude Code, Cursor, Copilot CLI) extracted from real projects, generalized for any codebase. Each plugin ships skills, agents, commands, hooks, and shared helper scripts — wired to work together out of the box.
+
+The **universal-skills** marketplace is declared for Cursor at [`.cursor-plugin/marketplace.json`](.cursor-plugin/marketplace.json) ([Cursor multi-plugin repos](https://cursor.com/docs/reference/plugins)) and for Claude Code / Copilot at [`.claude-plugin/marketplace.json`](.claude-plugin/marketplace.json).
 
 ## Plugins
 
@@ -43,6 +45,36 @@ claude plugins install <plugin-name>
 ```
 
 Each plugin ships a `/setup` command that adds the recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are intentionally excluded and will always prompt for approval.
+
+### Cursor (IDE & CLI)
+
+If you **only use Cursor** (not Claude Code or Copilot CLI), rely on **`.cursor-plugin/`** at the repository root: [`marketplace.json`](.cursor-plugin/marketplace.json) lists the **universal-skills** marketplace, and each of `plugins/core`, `plugins/infra`, and `plugins/webapp` has its own **`plugin.json`**. See the [Plugins reference → Multi-plugin repositories](https://cursor.com/docs/reference/plugins).
+
+Install plugins from Cursor’s marketplace UI — the same installs apply to **[desktop, web, and the `agent` CLI](https://cursor.com/help/customization/plugins)** ([Cursor CLI](https://cursor.com/docs/cli.md)) with no separate “CLI-only” plugin installer.
+
+**1. Cursor app (public marketplace)**
+
+When **universal-skills** (or individual plugins from this repo) are available on [cursor.com/marketplace](https://cursor.com/marketplace), open the Plugins / Marketplace experience in Cursor, find **core**, **infra**, or **webapp**, and install with **project** or **user** scope. To publish or update a listing, use [cursor.com/marketplace/publish](https://cursor.com/marketplace/publish) and the [submission checklist](https://cursor.com/docs/reference/plugins) (includes multi-plugin repos with `.cursor-plugin/marketplace.json` at the repo root).
+
+**2. Team / Enterprise (import this GitHub repo)**
+
+On Teams or Enterprise, import this repository as a **[team marketplace](https://cursor.com/docs/plugins)**: **Dashboard → Settings → Plugins → Team Marketplaces → Import** → paste **this repo’s HTTPS or SSH clone URL**. Confirm the marketplace name **universal-skills** and the three plugins (`core`, `infra`, `webapp`) parse correctly, then assign access as needed.
+
+**3. Local checkout (symlink)**
+
+To test against a clone without publishing, symlink each plugin into Cursor’s local plugin directory ([Test plugins locally](https://cursor.com/docs/plugins)):
+
+```bash
+REPO=/absolute/path/to/this/repo
+mkdir -p ~/.cursor/plugins/local
+ln -sfn "$REPO/plugins/core"   ~/.cursor/plugins/local/core
+ln -sfn "$REPO/plugins/infra"  ~/.cursor/plugins/local/infra
+ln -sfn "$REPO/plugins/webapp" ~/.cursor/plugins/local/webapp
+```
+
+Restart Cursor or run **Developer: Reload Window**.
+
+**Commands / `/setup`:** Slash commands reference paths like `.claude/settings.json`; on Cursor-only workflows you configure tool permissions under **Cursor Settings** as usual — see [Plugins](https://cursor.com/docs/plugins.md) and CLI [configuration](https://cursor.com/docs/cli/reference/configuration.md) if you rely on **`agent`**.
 
 ### GitHub Copilot CLI
 
