@@ -41,10 +41,20 @@ Use accessibility-first locators:
 Use your framework's equivalent APIs if it does not provide these exact methods.
 
 Never use:
-- CSS selectors for styling classes (`.btn-primary`)
+- CSS selectors for styling classes (`.btn-primary`, utility-class chains like `.bg-primary.text-white`)
 - XPath expressions
 - Positional selectors (`:nth-child`)
 - Implementation-detail selectors (`[data-state="open"]`)
+- Inline class-string selectors derived from production code — couples the test to the visual layer
+
+### Selectors helper
+
+If the project has a `selectors` helper (commonly `e2e/helpers/selectors.ts`, `tests/e2e/selectors.ts`, or framework equivalent), all locators must come from it. Do not inline locators in test files.
+
+- The helper centralizes locator strategy and survives refactors of component markup.
+- A test failing because the helper was wrong should fix the helper, not duplicate a workaround locator inline.
+- If the project does not yet have a selectors helper and the test introduces a non-trivial locator (more than one chained call, or used in more than one test), create the helper as part of the same change.
+- Cross-platform shortcut keys belong in the helper too — `Meta+a` on macOS is `Control+a` on Linux/CI. Centralizing the mapping prevents per-OS test breakage.
 
 ## Assertion Patterns
 
@@ -53,6 +63,21 @@ Never use:
 - Assert page URL after navigation.
 - Assert accessible names and roles, not CSS classes.
 - Verify ARIA attributes for dynamic content (e.g., `aria-expanded`, `aria-selected`).
+
+### Behavior-not-wiring red flags (e2e)
+
+The same anti-patterns from `write-tests` apply to e2e, plus a few that are e2e-specific:
+
+| Red flag in your draft e2e | Reality |
+|---|---|
+| `if (count > 0) { … }` guard around an interaction | The test passes vacuously when the selector finds nothing — failure mode is silent |
+| `await page.locator('.bg-primary')` or other utility-class CSS selector | Tied to the visual layer; refactor-fragile and not what the user sees |
+| `await page.waitForTimeout(N)` | Fixed sleep; either too short (flaky) or too long (slow). Use condition-based waits. |
+| Reads the boundingBox / pixel position to verify state | Boundary boxes are unreliable across viewports; assert ARIA or visible text |
+| Test depends on data left by a previous test | Tests must be isolated (see Test Isolation below) |
+| Cross-platform shortcut hardcoded (`Meta+a`) without OS branching | Works on the author's machine; breaks in CI |
+
+For every assertion, write the **state change or side effect** the test verifies into the test name. If you can't, you have one of the anti-patterns above.
 
 ## Test Isolation
 
