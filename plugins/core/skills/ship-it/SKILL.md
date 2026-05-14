@@ -149,9 +149,11 @@ Suggest 2-3 concrete follow-ups tailored to the actual changes. Read the diff to
 
 Tailor suggestions to what actually changed. If files in a testing directory changed, suggest verifying test coverage. If configuration changed, suggest validating in a real environment. If documentation changed, suggest reviewing for accuracy.
 
-## Superpowers Integration
+## Supporting Skills Integration
 
 If `superpowers:requesting-code-review` is available, dispatch a code-reviewer subagent after PR creation. This provides an automated first-pass review before human reviewers see the PR.
+
+**`superpowers:finishing-a-development-branch`** — If available and you are completing a branch produced by `subagent-driven-development` (worktree-based, full implementation pipeline), use `finishing-a-development-branch` instead of `/ship-it`. It handles worktree cleanup and offers merge-locally and discard options that `/ship-it` does not provide. For standalone branches not created by the superpowers pipeline, `/ship-it` is the right tool.
 
 ## Rules
 

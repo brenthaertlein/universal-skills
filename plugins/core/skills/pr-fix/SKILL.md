@@ -50,7 +50,7 @@ Keep comments from: human reviewers, automated code review sections (look for he
 
 When a single comment contains multiple distinct issues (e.g. a review with separate sections), split them into individual issues for the matrix.
 
-### 3. Classify each issue on three axes
+### 3. Classify each issue on four axes
 
 For each issue, assign:
 
@@ -59,7 +59,7 @@ For each issue, assign:
 | **Severity** | Blocker / Warning / Suggestion | Impact if left unfixed. Blocker = bug, broken behavior, or data loss. Warning = correctness risk or code smell. Suggestion = improvement, style, or nice-to-have. |
 | **Confidence** | Unambiguous / Debatable | Whether the fix is objectively correct (Unambiguous) or a matter of opinion, tradeoff, or requires product/design input (Debatable). |
 | **Effort** | Quick / Involved | Quick = mechanical change, less than 5 min. Involved = requires thought, testing, design decisions, or touches multiple files. |
-| **Scope** | In / Out / Ambiguous | Whether the issue is in scope for the current branch's work. See **Scope classification** below. |
+| **Scope** | In / Out / Ambiguous | Whether the issue is in scope for the current branch's work. See **Scope classification** below. "Out" covers both out-of-scope surface and out-of-scope subject. |
 
 Derive a **Recommendation** column:
 - **Fix now**: Unambiguous, in-scope issues of any severity
@@ -69,30 +69,31 @@ Derive a **Recommendation** column:
 
 ### 3a. Scope classification
 
-If a scope contract exists for this branch (see `core/scope-statement-check`), classify each issue against it before deciding the recommendation. The contract lives at `.claude/scope/<branch>.md` and lists `In Scope`, `Out of Scope`, `Touched Surfaces`, and `Untouched Surfaces`.
+If `core:scope-statement-check` is available and a scope contract exists for this branch (`.claude/scope/<branch>.md`), invoke `scope-statement-check classify` on the filtered findings. This attaches a **Scope** axis to each finding:
 
-For each issue, decide:
+- **in-scope** — path and subject match the contract's In Scope bullets
+- **out-of-scope** — path or subject is explicitly excluded by the contract
+- **ambiguous** — neither clearly in nor clearly out
 
-- **In scope** — the issue's file path is inside `Touched Surfaces` *and* the subject relates to an `In Scope` bullet
-- **Out of scope (surface)** — the file is in `Untouched Surfaces` or outside both lists
-- **Out of scope (subject)** — the file is in scope but the subject is explicitly excluded by the contract
-- **Ambiguous** — neither clearly in nor clearly out
+Out-of-scope findings default to **Defer** in the Recommendation column and receive a generated deferral rationale from scope-statement-check that pre-fills the reply template in step 7.
+
+If the skill is not available, or no contract exists for this branch, classify scope inline: read the contract at `.claude/scope/<branch>.md` if present, apply the same in/out/ambiguous logic, and default out-of-scope findings to Defer. If no contract exists at all, skip scope classification and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
 
 Out-of-scope issues default to **Defer** regardless of severity. The user can override case-by-case in step 5. This is the single largest source of review-cycle waste — bots and reviewers consistently flag legitimately out-of-scope work, and a contract-based default removes the keystroke cost of explaining each one.
-
-If no contract exists for the branch, skip scope classification and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
 
 ### 4. Present the matrix
 
 Output a markdown table sorted by recommendation priority (Fix now > Discuss > Optional), then by severity (Blocker > Warning > Suggestion):
 
 ```markdown
-| # | Issue | File | Severity | Confidence | Effort | Recommendation |
-|---|-------|------|----------|------------|--------|----------------|
-| 1 | Description | path#line | Blocker | Unambiguous | Quick | Fix now |
-| 2 | Description | path#line | Warning | Unambiguous | Involved | Fix now |
+| # | Issue | File | Scope | Severity | Confidence | Effort | Recommendation |
+|---|-------|------|-------|----------|------------|--------|----------------|
+| 1 | Description | path#line | In | Blocker | Unambiguous | Quick | Fix now |
+| 2 | Description | path#line | Out | Warning | Unambiguous | Involved | Defer |
 | ...
 ```
+
+When scope classification was skipped (no contract), omit the Scope column.
 
 Below the table, provide a brief summary:
 - How many issues total

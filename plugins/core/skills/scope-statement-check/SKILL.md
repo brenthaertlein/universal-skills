@@ -86,7 +86,7 @@ If the source explicitly excludes a directory, list it under **Untouched Surface
 
 ### 2. Enforce — at commit time
 
-Run before staging or before `/commit`. Compare the staged diff to the contract.
+Run after staging, before `/commit`. Compare the staged diff to the contract.
 
 #### Steps
 1. Load `.claude/scope/<branch>.md`. If missing, prompt: "No scope contract for this branch. Extract one now, or proceed without?" Default to extract.

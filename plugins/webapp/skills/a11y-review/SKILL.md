@@ -157,7 +157,8 @@ rg -n 'role="button"' --type tsx | while read line; do
 done
 
 # A2: SVG without aria-hidden or aria-label
-rg -n '<svg(?![^>]*aria-(hidden|label))' --type tsx
+# Note: uses PCRE2 lookahead — requires rg built with PCRE2 support (rg -P)
+rg -Pn '<svg(?![^>]*aria-(hidden|label))' --type tsx
 
 # A3: outline-none / focus:outline-0 without focus-visible:ring
 rg -n 'outline-none|outline:\s*none|focus:outline-0' --type tsx --type css
