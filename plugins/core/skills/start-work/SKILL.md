@@ -231,6 +231,8 @@ Same as Option 1 but only pause for:
 - Flagged decision points from the plan's "Risks & Open Questions"
 - Anything requiring credentials or manual access
 
+If `superpowers:test-driven-development` is available, apply the TDD cycle for each implementation step (same as Option 1).
+
 ### Option 3 — Chat about the plan:
 
 Enter discussion mode. Answer questions, explain reasoning, adjust scope.
