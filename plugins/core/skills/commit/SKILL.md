@@ -116,9 +116,16 @@ Next: Run /ship-it to push.
 
 List each check category that was evaluated. PASS means it passed, FIXED means `--fix` resolved issues, SKIPPED means the check was not relevant to staged files, N/A means no command is defined for that category.
 
-## Superpowers Integration
+## Supporting Skills Integration
 
-The `superpowers:verification-before-completion` skill complements this skill's automated checks. Where `/commit` runs concrete project-defined commands, verification-before-completion ensures that success claims are backed by evidence. They layer naturally — verification-before-completion is the discipline, `/commit` is the execution.
+**`superpowers:verification-before-completion`** *(external — conditional)*
+Complements step 3b. Where `/commit` runs concrete project commands, verification-before-completion ensures success claims are backed by evidence. Only applies when the superpowers plugin is installed.
+
+**`core:scope-statement-check`** — Run `scope-statement-check enforce` during step 3b. If a scope contract exists for this branch (`.claude/scope/<branch>.md`), files outside the contract surface as warnings; the user chooses to split, expand, or override. If no contract exists for this branch, this step is silently skipped.
+
+**`core:comment-discipline`** — Run during step 3b on the staged diff. Reports WHAT-not-WHY comments and paraphrase noise. Advisory only — does not block the commit.
+
+**`core:error-handling-preflight`** — Run during step 3b on staged source files. Critical findings (unguarded parse, silent catch, raw error leaked to client, correlated writes without transaction) surface as warnings requiring acknowledgment. If `webapp/error-handling-preflight` is available and staged files include web-stack code, use it instead of the core skill.
 
 ## Rules
 

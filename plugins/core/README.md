@@ -74,6 +74,31 @@ Run `/setup` to automatically configure recommended permissions, or manually add
 
 Operations that modify state (commit, push, merge, PR create, issue edit, branch create) are intentionally excluded — you'll be prompted for approval each time.
 
+## Development Workflow
+
+Core skills cover the full feature/bugfix loop:
+
+```
+start-work  →  ship-it  →  pr-fix  →  ship-it
+```
+
+`commit` is used within a PR review cycle to batch incremental fixes without triggering CI on every change.
+
+When **superpowers** and/or **feature-dev** are installed, `start-work` offers richer paths but the lightweight path above always remains available:
+
+```
+# Lightweight (standalone)
+start-work → [implement] → ship-it → pr-fix → ship-it
+
+# With feature-dev
+start-work → feature-dev (explore + architecture) → [implement] → ship-it → pr-fix → ship-it
+
+# With superpowers full pipeline
+start-work → brainstorming → writing-plans → subagent-driven-development → ship-it → pr-fix → ship-it
+```
+
+Supporting skills (`scope-statement-check`, `comment-discipline`, `error-handling-preflight`) fire automatically inside `start-work`, `commit`, and `pr-fix` when installed — they do not need to be invoked directly.
+
 ## Companion Plugins
 
 ### Sibling plugins (same repo)
@@ -89,5 +114,6 @@ Core works standalone, but `/commit` and `/ship-it` run richer preflight checks 
 
 | Plugin | Integration |
 |--------|-------------|
-| **superpowers** | `start-work` invokes `brainstorming` for open-ended tasks. `commit` is complemented by `verification-before-completion`. `debug` invokes `systematic-debugging` for methodology. `ship-it` dispatches `requesting-code-review` after PR creation. |
+| **superpowers** | `start-work` offers brainstorming + writing-plans + subagent-driven-development path. `commit` gains verification-before-completion discipline. `debug` gains systematic-debugging methodology. `ship-it` dispatches requesting-code-review and notes finishing-a-development-branch for pipeline branches. |
+| **feature-dev** | `start-work` offers parallel agent codebase exploration and architecture design as an alternative to the Quick start path. |
 | **code-simplifier** | Autonomous post-edit refinement — runs after code changes to improve clarity and consistency. Complements the manual review skills. |

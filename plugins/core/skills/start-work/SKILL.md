@@ -10,9 +10,35 @@ allowed-tools: Bash, Read, Grep, Glob, AskUserQuestion, Agent, Edit, Write
 
 Research a work item, draft an implementation plan, and begin work after approval.
 
-## Superpowers Integration
+## Supporting Skills Integration
 
-If `superpowers:brainstorming` is available and the task is open-ended (no clear implementation path, multiple valid approaches, or design decisions required), invoke it before Phase 1. This surfaces requirements and design considerations early. For well-scoped tasks with obvious implementations, skip directly to Phase 1.
+All integrations below are strictly conditional on external plugins. If a skill is
+not available, proceed as if this section does not exist — no mention, no complaint.
+
+**After Phase 1d** (work item confirmed): if `core:scope-statement-check` is
+available, run `scope-statement-check extract` on the work item to write a scope
+contract to `.claude/scope/<branch>.md`. This feeds downstream into commit
+enforcement and pr-fix classification.
+
+**Between Phase 2 and Phase 3**: if `feature-dev:feature-dev` or
+`superpowers:brainstorming` is available, present a routing question before
+codebase exploration. Include only the options whose skills are actually installed:
+
+Use AskUserQuestion — "How do you want to approach this?":
+
+- **Quick start** *(always present)* — codebase scan, questionnaire, plan (Phases 3–6)
+- **feature-dev** *(only if `feature-dev:feature-dev` is available)* — parallel
+  agent codebase exploration and architecture design; returns to you at implementation
+- **Brainstorm** *(only if `superpowers:brainstorming` is available)* — design
+  dialogue → spec doc → `writing-plans` → `subagent-driven-development`
+
+If neither skill is available: skip the question entirely and proceed directly to Phase 3.
+
+If **feature-dev** chosen: pass work item summary + Phase 2 findings as context,
+invoke `feature-dev:feature-dev`. Do not proceed with Phases 3–6.
+
+If **Brainstorm** chosen: pass work item summary as context, invoke
+`superpowers:brainstorming`. Do not proceed with Phases 3–6.
 
 ## Phase 1: Parse Input & Fetch Context
 
@@ -192,8 +218,11 @@ Display the full plan, then present these options:
 1. Check for existing branches, offer to reuse or create new from `origin/main`
 2. `git fetch origin main && git checkout -b <branch> origin/main`
 3. Work through each step, briefly summarize after each
-4. Run project-defined checks after completing all steps
-5. Do NOT commit — suggest `/commit` when ready
+4. If `superpowers:test-driven-development` is available, apply the TDD cycle for
+   each implementation step — write the failing test first, verify it fails,
+   implement minimum to pass, verify it passes.
+5. Run project-defined checks after completing all steps
+6. Do NOT commit — suggest `/commit` when ready
 
 ### Option 2 — Auto edits:
 
@@ -201,6 +230,8 @@ Same as Option 1 but only pause for:
 - Destructive or risky operations
 - Flagged decision points from the plan's "Risks & Open Questions"
 - Anything requiring credentials or manual access
+
+If `superpowers:test-driven-development` is available, apply the TDD cycle for each implementation step (same as Option 1).
 
 ### Option 3 — Chat about the plan:
 

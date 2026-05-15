@@ -112,6 +112,12 @@ When invoked during a TDD workflow:
 2. Verify the test fails (red).
 3. Signal that implementation can proceed (the user or another skill handles green).
 
+## Supporting Skills Integration
+
+**`superpowers:test-driven-development`** — If available and you are implementing new functionality, use TDD instead of this skill. TDD writes tests *before* implementation, driving the design from desired behavior and verifying each test fails for the right reason before writing code.
+
+`/write-tests` is the right tool when: adding coverage to *existing* code, filling gaps after implementation, auditing coverage targets by directory, or generating a test scaffold for a file that was written without TDD.
+
 ## Process
 
 1. Identify target files needing tests.

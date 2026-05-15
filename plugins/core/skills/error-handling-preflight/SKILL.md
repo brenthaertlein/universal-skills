@@ -123,7 +123,8 @@ For each universal check, run a grep pattern against the target files. Examples 
 
 ```bash
 # Floating promises (TypeScript/JavaScript)
-rg -n '\.then\([^)]*\)(?!\s*\.catch)' --type ts --type js
+# Note: uses PCRE2 lookahead — requires rg built with PCRE2 support (rg -P)
+rg -Pn '\.then\([^)]*\)(?!\s*\.catch)' --type ts --type js
 
 # Async passed to event handler
 rg -n 'on[A-Z][a-zA-Z]+=\{(async\b|[a-zA-Z_$][a-zA-Z0-9_$]*\s*\})' --type tsx
