@@ -43,6 +43,11 @@
             "type": "command",
             "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git worktree remove.*--force|git worktree remove.*-f\" 2>/dev/null; then echo \"[worktree-guard] git worktree remove --force is blocked. Use without --force or ask the user for explicit approval.\" && exit 2; fi'",
             "timeout": 5000
+          },
+          {
+            "type": "command",
+            "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"find .*-execdir|find .*-exec\" 2>/dev/null; then echo \"[find-exec-guard] find -exec/-execdir is blocked. Use the Read tool to inspect files, or pipe find into grep (find ... | grep ...) -- both are pre-approved.\" && exit 2; fi'",
+            "timeout": 5000
           }
         ]
       }

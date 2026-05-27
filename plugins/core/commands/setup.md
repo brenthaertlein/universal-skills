@@ -35,8 +35,10 @@ The following permissions should be added to `.claude/settings.json` under `perm
   "Bash(gh api repos/*/pulls/*/reviews*)",
   "Bash(gh search issues*)",
   "Bash(gh search prs*)",
-  "Write(.claude/plans/*)",
-  "Edit(.claude/plans/*)"
+  "Bash(find *)",
+  "Bash(grep *)",
+  "Write(.plans/*)",
+  "Edit(.plans/*)"
 ]
 ```
 

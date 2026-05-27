@@ -50,7 +50,7 @@ If none of those exist, run an `AskUserQuestion` with two questions:
 - "What is explicitly excluded?" (free text)
 
 #### Contract format
-Write to `.claude/scope/<branch-name>.md`:
+Write to `.scope/<branch-name>.md`:
 
 ```markdown
 # Scope Contract — <Title>
@@ -89,7 +89,7 @@ If the source explicitly excludes a directory, list it under **Untouched Surface
 Run after staging, before `/commit`. Compare the staged diff to the contract.
 
 #### Steps
-1. Load `.claude/scope/<branch>.md`. If missing, prompt: "No scope contract for this branch. Extract one now, or proceed without?" Default to extract.
+1. Load `.scope/<branch>.md`. If missing, prompt: "No scope contract for this branch. Extract one now, or proceed without?" Default to extract.
 2. List files in the staged diff: `git diff --cached --name-only`
 3. For each file, classify against the contract:
    - **In contract** — file matches a `Touched Surfaces` glob → OK

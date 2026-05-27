@@ -121,7 +121,7 @@ List each check category that was evaluated. PASS means it passed, FIXED means `
 **`superpowers:verification-before-completion`** *(external — conditional)*
 Complements step 3b. Where `/commit` runs concrete project commands, verification-before-completion ensures success claims are backed by evidence. Only applies when the superpowers plugin is installed.
 
-**`core:scope-statement-check`** — Run `scope-statement-check enforce` during step 3b. If a scope contract exists for this branch (`.claude/scope/<branch>.md`), files outside the contract surface as warnings; the user chooses to split, expand, or override. If no contract exists for this branch, this step is silently skipped.
+**`core:scope-statement-check`** — Run `scope-statement-check enforce` during step 3b. If a scope contract exists for this branch (`.scope/<branch>.md`), files outside the contract surface as warnings; the user chooses to split, expand, or override. If no contract exists for this branch, this step is silently skipped.
 
 **`core:comment-discipline`** — Run during step 3b on the staged diff. Reports WHAT-not-WHY comments and paraphrase noise. Advisory only — does not block the commit.
 

@@ -10,7 +10,7 @@ Stack-agnostic workflow skills for Claude Code. Works with any language, framewo
 | commit | `/commit` | Preflight checks + commit. Does not push. |
 | ship-it | `/ship-it` | Full pipeline: commit → push → PR → follow-ups |
 | checkout | `/checkout <branch>` | Create a worktree for an existing branch |
-| cleanup | `/cleanup` | Remove worktrees for merged branches |
+| cleanup | `/cleanup` | Remove worktrees whose PR has been merged or closed |
 | debug | `/debug <description>` | Senior-engineer debugging: evidence first, fix last |
 | pr-fix | `/pr-fix` | Triage PR review comments, classify, and fix |
 
@@ -65,8 +65,10 @@ Run `/setup` to automatically configure recommended permissions, or manually add
       "Bash(gh api repos/*/pulls/*/reviews*)",
       "Bash(gh search issues*)",
       "Bash(gh search prs*)",
-      "Write(.claude/plans/*)",
-      "Edit(.claude/plans/*)"
+      "Bash(find *)",
+      "Bash(grep *)",
+      "Write(.plans/*)",
+      "Edit(.plans/*)"
     ]
   }
 }

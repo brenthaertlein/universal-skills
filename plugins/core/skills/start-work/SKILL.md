@@ -17,7 +17,7 @@ not available, proceed as if this section does not exist — no mention, no comp
 
 **After Phase 1d** (work item confirmed): if `core:scope-statement-check` is
 available, run `scope-statement-check extract` on the work item to write a scope
-contract to `.claude/scope/<branch>.md`. This feeds downstream into commit
+contract to `.scope/<branch>.md`. This feeds downstream into commit
 enforcement and pr-fix classification.
 
 **Between Phase 2 and Phase 3**: if `feature-dev:feature-dev` or
@@ -139,7 +139,7 @@ Rules:
 
 ## Phase 5: Draft Plan
 
-Create `.claude/plans/` directory if needed, then write to `.claude/plans/<slug>.md`:
+Create `.plans/` directory if needed, then write to `.plans/<slug>.md`:
 
 ```markdown
 # Plan: <Title>
@@ -243,7 +243,7 @@ Accept feedback, update the plan file, re-present.
 
 ### Option 5 — Cancel:
 
-Stop. Plan file remains at `.claude/plans/<slug>.md` for later use.
+Stop. Plan file remains at `.plans/<slug>.md` for later use.
 
 ## Safety Rules
 

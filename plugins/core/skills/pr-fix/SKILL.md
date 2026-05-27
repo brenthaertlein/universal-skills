@@ -69,13 +69,13 @@ Derive a **Recommendation** column:
 
 ### 3a. Scope classification
 
-If `core:scope-statement-check` is available and a scope contract exists for this branch (`.claude/scope/<branch>.md`), invoke `scope-statement-check classify` on the filtered findings. This attaches a **Scope** axis to each finding:
+If `core:scope-statement-check` is available and a scope contract exists for this branch (`.scope/<branch>.md`), invoke `scope-statement-check classify` on the filtered findings. This attaches a **Scope** axis to each finding:
 
 - **In** — path and subject match the contract's In Scope bullets
 - **Out** — path or subject is explicitly excluded by the contract (covers both surface and subject mismatches)
 - **Ambiguous** — neither clearly in nor clearly out
 
-If the skill is not available, or no contract exists for this branch, classify scope inline: read the contract at `.claude/scope/<branch>.md` if present, apply the same In/Out/Ambiguous logic. If no contract exists at all, skip scope classification entirely and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
+If the skill is not available, or no contract exists for this branch, classify scope inline: read the contract at `.scope/<branch>.md` if present, apply the same In/Out/Ambiguous logic. If no contract exists at all, skip scope classification entirely and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
 
 Out-of-scope findings default to **Defer** regardless of severity; the user can override case-by-case in step 5. When scope-statement-check ran, it pre-fills the reply template in step 7 with a generated deferral rationale. This is the single largest source of review-cycle waste — bots and reviewers consistently flag legitimately out-of-scope work, and a contract-based default removes the keystroke cost of explaining each one.
 
