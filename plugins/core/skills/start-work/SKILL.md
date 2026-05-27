@@ -139,6 +139,28 @@ Rules:
 
 ## Phase 5: Draft Plan
 
+### 5a. Validate the proposed branch name (soft check)
+
+Before writing the plan file, validate the branch name you're about to record in the plan's `**Branch**:` field.
+
+**Default regex:** `^(feat|fix|chore|docs|refactor|test|perf|build|ci|style)/(?:[0-9]+-)?[a-z0-9][a-z0-9-]*$`
+
+Matches: `feat/new-feature`, `fix/123-broken-button`, `chore/update-deps`, `refactor/auth-cleanup`. Does NOT match: `my-feature` (no type prefix), `Feat/X` (uppercase), `feat_x` (underscore instead of slash).
+
+**Soft check only.** If the proposed branch name doesn't match the active regex, present an `AskUserQuestion` with three options:
+- **Use the suggested compliant name** — derive one by lowercasing, replacing spaces/underscores with `-`, and prepending a sensible type prefix inferred from the work item (issue label, PR-style commit prefix in related work, or default to `feat`)
+- **Override with this name (continue anyway)** — record the non-compliant name and proceed
+- **Pick another name** — ask the user for a replacement
+
+Never reject silently. Never block.
+
+**Configurable via CLAUDE.md key `start-work.branch-pattern`:**
+- `<regex string>` — override the default with a project-specific regex.
+- `disabled` — skip the check entirely.
+- Omitted — use the default regex above.
+
+### 5b. Write the plan file
+
 Create `.plans/` directory if needed, then write to `.plans/<slug>.md`:
 
 ```markdown

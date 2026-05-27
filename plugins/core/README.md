@@ -13,6 +13,7 @@ Stack-agnostic workflow skills for Claude Code. Works with any language, framewo
 | cleanup | `/cleanup` | Remove worktrees whose PR has been merged or closed |
 | debug | `/debug <description>` | Senior-engineer debugging: evidence first, fix last |
 | pr-fix | `/pr-fix` | Triage PR review comments, classify, and fix |
+| pr-review | `/pr-review <PR>` | Reviewer-side workflow — read-only, posts inline findings only on explicit approval |
 
 ### Planning
 | Skill | Command | Description |
