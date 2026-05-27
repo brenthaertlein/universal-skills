@@ -1,6 +1,6 @@
 ---
 name: review-gke
-description: "GKE cluster hardening and cost review — Autopilot vs Standard, workload identity, node-pool sizing, cluster autoscaler, network policy."
+description: "[pr-review-focus-area: GKE] GKE cluster hardening and cost review — Autopilot vs Standard, workload identity, node-pool sizing, cluster autoscaler, network policy."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

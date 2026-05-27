@@ -1,6 +1,6 @@
 ---
 name: best-practices
-description: "Review code for functional style, component composition, hooks/context usage, and general code hygiene."
+description: "[pr-review-focus-area: Code Hygiene] Review code for functional style, component composition, hooks/context usage, and general code hygiene."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

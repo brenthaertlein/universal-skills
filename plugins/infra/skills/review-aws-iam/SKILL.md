@@ -1,6 +1,6 @@
 ---
 name: review-aws-iam
-description: "AWS IAM least-privilege audit for roles, policies, and user permissions declared in Terraform / CloudFormation or live in the account."
+description: "[pr-review-focus-area: AWS IAM] AWS IAM least-privilege audit for roles, policies, and user permissions declared in Terraform / CloudFormation or live in the account."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

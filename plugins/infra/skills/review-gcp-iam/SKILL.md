@@ -1,6 +1,6 @@
 ---
 name: review-gcp-iam
-description: "GCP IAM least-privilege audit across project, folder, and org policies, including service-account usage and impersonation paths."
+description: "[pr-review-focus-area: GCP IAM] GCP IAM least-privilege audit across project, folder, and org policies, including service-account usage and impersonation paths."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

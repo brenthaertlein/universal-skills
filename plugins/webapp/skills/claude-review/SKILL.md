@@ -1,6 +1,6 @@
 ---
 name: claude-review
-description: "Holistic audit of .claude/ configuration, skills inventory, CLAUDE.md quality, settings, hooks, and memory."
+description: "[pr-review-focus-area: Claude Config] Holistic audit of .claude/ configuration, skills inventory, CLAUDE.md quality, settings, hooks, and memory."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

@@ -1,6 +1,6 @@
 ---
 name: review-kubernetes-rbac
-description: "Audit Kubernetes RBAC across a cluster — ClusterRoles, Roles, bindings, and ServiceAccount permissions. Works on EKS, GKE, AKS, and on-prem."
+description: "[pr-review-focus-area: Kubernetes RBAC] Audit Kubernetes RBAC across a cluster — ClusterRoles, Roles, bindings, and ServiceAccount permissions. Works on EKS, GKE, AKS, and on-prem."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

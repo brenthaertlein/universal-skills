@@ -1,2 +1,11 @@
 # Claude Code local files
 .claude/
+
+# Per-task artifact paths (skill-managed, never tracked)
+.worktrees/
+.plans/
+.scope/
+
+# Superpowers-generated process scaffolding (specs, plans, brainstorming output)
+# This repo tracks plugin artifacts only; design docs do not belong here.
+docs/superpowers/
