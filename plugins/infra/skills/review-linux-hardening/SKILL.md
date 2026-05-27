@@ -1,6 +1,6 @@
 ---
 name: review-linux-hardening
-description: "Lightweight CIS-benchmark-style audit of Linux host configuration as declared in Ansible inventory / roles / playbooks. Read-only, repo-local."
+description: "[pr-review-focus-area: Linux Hardening] Lightweight CIS-benchmark-style audit of Linux host configuration as declared in Ansible inventory / roles / playbooks. Read-only, repo-local."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

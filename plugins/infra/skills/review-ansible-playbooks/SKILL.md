@@ -1,6 +1,6 @@
 ---
 name: review-ansible-playbooks
-description: "Deeper Ansible role and playbook audit beyond ansible-lint — idempotency smells, handler misuse, secret handling, become-scope, tag discipline."
+description: "[pr-review-focus-area: Ansible Playbooks] Deeper Ansible role and playbook audit beyond ansible-lint — idempotency smells, handler misuse, secret handling, become-scope, tag discipline."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

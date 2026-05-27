@@ -1,6 +1,6 @@
 ---
 name: review-aws-well-architected
-description: "Lightweight Well-Architected Framework review across the five pillars — Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization."
+description: "[pr-review-focus-area: AWS Well-Architected] Lightweight Well-Architected Framework review across the five pillars — Operational Excellence, Security, Reliability, Performance Efficiency, Cost Optimization."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

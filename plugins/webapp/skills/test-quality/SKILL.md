@@ -1,6 +1,6 @@
 ---
 name: test-quality
-description: "Assess test quality by detecting anti-patterns and verifying tests exercise real behavior."
+description: "[pr-review-focus-area: Tests] Assess test quality by detecting anti-patterns and verifying tests exercise real behavior."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

@@ -1,6 +1,6 @@
 ---
 name: a11y-review
-description: "Review changed UI files for the small set of accessibility patterns that account for most a11y review-cycle blockers."
+description: "[pr-review-focus-area: Accessibility] Review changed UI files for the small set of accessibility patterns that account for most a11y review-cycle blockers."
 user-invocable: true
 disable-model-invocation: false
 allowed-tools:

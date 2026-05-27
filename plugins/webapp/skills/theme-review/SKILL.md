@@ -1,6 +1,6 @@
 ---
 name: theme-review
-description: "Review design token usage, dark/light mode implementation, and styling consistency."
+description: "[pr-review-focus-area: Theming & Tokens] Review design token usage, dark/light mode implementation, and styling consistency."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

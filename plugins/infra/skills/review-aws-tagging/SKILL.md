@@ -1,6 +1,6 @@
 ---
 name: review-aws-tagging
-description: "Audit AWS resource tag compliance against an organization taxonomy (cost center, owner, environment, data classification, etc.)."
+description: "[pr-review-focus-area: AWS Tagging] Audit AWS resource tag compliance against an organization taxonomy (cost center, owner, environment, data classification, etc.)."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

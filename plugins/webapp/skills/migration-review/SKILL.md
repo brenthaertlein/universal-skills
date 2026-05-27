@@ -1,6 +1,6 @@
 ---
 name: migration-review
-description: "Review database migrations for safety, deploy ordering, and data integrity."
+description: "[pr-review-focus-area: DB Migrations] Review database migrations for safety, deploy ordering, and data integrity."
 user-invocable: true
 allowed-tools:
   - Read

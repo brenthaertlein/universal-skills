@@ -1,6 +1,6 @@
 ---
 name: docs-review
-description: "Review documentation for accuracy, completeness, consistency, and LLM context quality."
+description: "[pr-review-focus-area: Docs] Review documentation for accuracy, completeness, consistency, and LLM context quality."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

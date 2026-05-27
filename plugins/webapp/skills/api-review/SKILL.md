@@ -1,6 +1,6 @@
 ---
 name: api-review
-description: "Review API routes for auth, input validation, error handling consistency, HTTP conventions, and test coverage."
+description: "[pr-review-focus-area: API Routes] Review API routes for auth, input validation, error handling consistency, HTTP conventions, and test coverage."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

@@ -1,6 +1,6 @@
 ---
 name: review-drift
-description: "Detect drift between IaC state (Terraform/Pulumi/CloudFormation) and live cloud or baremetal reality."
+description: "[pr-review-focus-area: IaC Drift] Detect drift between IaC state (Terraform/Pulumi/CloudFormation) and live cloud or baremetal reality."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

@@ -1,6 +1,6 @@
 ---
 name: review-costs
-description: "Flag cost hotspots in Terraform plans and live cloud inventory - oversized instances, orphaned volumes, idle load balancers, untagged resources, NAT egress."
+description: "[pr-review-focus-area: Cloud Costs] Flag cost hotspots in Terraform plans and live cloud inventory - oversized instances, orphaned volumes, idle load balancers, untagged resources, NAT egress."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

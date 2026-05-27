@@ -1,6 +1,6 @@
 ---
 name: review-systemd-units
-description: "Audit systemd unit files (in Ansible templates / roles / repo) for Restart, resource limits, and sandboxing directives."
+description: "[pr-review-focus-area: systemd Units] Audit systemd unit files (in Ansible templates / roles / repo) for Restart, resource limits, and sandboxing directives."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

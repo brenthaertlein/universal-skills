@@ -1,6 +1,6 @@
 ---
 name: review-observability
-description: "Audit a service for logging, metrics, and tracing coverage. Flags missing RED/USE signals, alerts without runbooks, dashboards without owners."
+description: "[pr-review-focus-area: Observability] Audit a service for logging, metrics, and tracing coverage. Flags missing RED/USE signals, alerts without runbooks, dashboards without owners."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

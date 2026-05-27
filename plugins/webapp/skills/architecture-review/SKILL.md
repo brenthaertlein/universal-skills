@@ -1,6 +1,6 @@
 ---
 name: architecture-review
-description: "Review code for server/client boundary violations, import direction issues, and file placement conventions."
+description: "[pr-review-focus-area: Architecture] Review code for server/client boundary violations, import direction issues, and file placement conventions."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

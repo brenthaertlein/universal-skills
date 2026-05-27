@@ -1,6 +1,6 @@
 ---
 name: review-disaster-recovery
-description: "Audit DR readiness — backup coverage, declared RTO/RPO vs configured reality, failover paths, and whether DR has been exercised recently."
+description: "[pr-review-focus-area: Disaster Recovery] Audit DR readiness — backup coverage, declared RTO/RPO vs configured reality, failover paths, and whether DR has been exercised recently."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

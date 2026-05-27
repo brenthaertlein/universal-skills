@@ -1,6 +1,6 @@
 ---
 name: security-review
-description: "Web application security review for XSS, CSRF, SQL injection, auth bypass, data exposure, CORS, and rate limiting."
+description: "[pr-review-focus-area: Security] Web application security review for XSS, CSRF, SQL injection, auth bypass, data exposure, CORS, and rate limiting."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:

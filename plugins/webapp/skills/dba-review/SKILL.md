@@ -1,6 +1,6 @@
 ---
 name: dba-review
-description: "Database schema and query audit for correctness, performance, and conventions."
+description: "[pr-review-focus-area: Database] Database schema and query audit for correctness, performance, and conventions."
 user-invocable: true
 disable-model-invocation: true
 allowed-tools:
