@@ -34,15 +34,16 @@ Three plugins live here:
 
 ## Per-task artifact paths
 
-Skill-managed per-task state lives at the repo root, never under `.claude/`:
+Skill-managed per-task state is **never committed** — it is all gitignored.
 
 | Path | Owner | Purpose |
 |---|---|---|
 | `.worktrees/<branch>/` | `/checkout`, `/cleanup` | Per-branch worktrees |
-| `.plans/<slug>.md` | `/start-work` | Drafted implementation plans |
 | `.scope/<branch>.md` | `/scope-statement-check` | Per-branch scope contracts |
 
-The `.claude/` prefix triggers a "settings-permission" prompt in Claude Code that interrupts edit mode; keeping artifacts at repo root sidesteps the prompt entirely. All four are in `.gitignore`.
+Keep `.worktrees/` and `.scope/` at the repo root rather than under `.claude/` — writes under `.claude/` can trigger a settings-permission prompt that interrupts edit mode.
+
+Plans are also never committed. `/start-work` plans and Claude's native `/plan` docs may live under `.plans/` or `.claude/plans/` depending on which produced them; either way they stay out of git history.
 
 ## Skill configuration
 
@@ -68,9 +69,9 @@ Use the default regex (specified under "Branch & PR policy" above). No override 
 
 Hard rules — apply regardless of which skill is active:
 
-- **No design specs, brainstorming output, or writing-plans output in tracked history.** Paths under `docs/superpowers/specs/` and `docs/superpowers/plans/` are gitignored as a backstop, but the behavioral rule applies even if `.gitignore` is missing or modified. Discuss designs in chat; write throwaway plans to `.plans/` (also gitignored).
-- **No source-project references.** This repo is public and used in enterprise settings. Skill text, examples, comments, paths, and identifiers must stand on their own. No org names, project names tied to one consumer, framework names that leak a particular stack, or domain references. "Ported from", "inspired by", "based on another project" framing is also off-limits — describe each artifact in its own terms.
-- **No untracked scratch files committed as part of a feature.** Tree dumps, screenshots, throwaway logs — leave them out or gitignore them. `claude-plugins-tree.txt` is the canonical example: kept around locally, never staged.
+- **No design specs, brainstorming output, or writing-plans output in tracked history.** Paths under `docs/superpowers/` are gitignored as a backstop, but the rule applies even if `.gitignore` is missing or modified. Discuss designs in chat; keep throwaway plans out of git.
+- **Everything stands on its own.** Skills, commands, examples, and identifiers must be general-purpose. No organization or project names, and no stack-specific identifiers that don't belong in a general-purpose skill. Describe each artifact in its own terms.
+- **No scratch files in commits.** Tree dumps, screenshots, throwaway logs — leave them out of the working tree or gitignore them; never stage them as part of a feature.
 
 ## Skill-author guidance
 
