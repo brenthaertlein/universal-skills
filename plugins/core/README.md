@@ -29,6 +29,12 @@ Stack-agnostic workflow skills for Claude Code. Works with any language, framewo
 | document | `/document [issue/feature]` | Create/update feature and issue docs |
 | improve-issues | `/improve-issues` | Enrich GitHub issues with context and labels |
 
+### Backlog
+| Skill | Command | Description |
+|-------|---------|-------------|
+| new-issue | `/new-issue [rough idea]` | Draft and open a structured GitHub issue with clarifying Q&A, labels, and type |
+| backlog-review | `/backlog-review [filter]` | Triage open issues for staleness, duplicates, and missing context; post review comments without mutating state |
+
 ### Meta
 | Skill | Command | Description |
 |-------|---------|-------------|
