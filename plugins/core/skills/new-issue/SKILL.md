@@ -53,7 +53,7 @@ If the user cannot articulate acceptance criteria, note this — do **not** inve
 Use `Grep` / `Glob` against the affected area to surface concrete file references:
 
 - Mentioned filenames, functions, commands → exact paths + line numbers
-- Mentioned plugins or skills → matching `plugins/*/skills/*/SKILL.md`
+- Mentioned modules, components, or features → matching directories or entry points
 
 Then search for prior art:
 
