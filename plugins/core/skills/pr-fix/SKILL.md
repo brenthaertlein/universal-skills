@@ -34,7 +34,7 @@ gh api --paginate repos/{owner}/{repo}/pulls/{number}/comments
 gh api --paginate repos/{owner}/{repo}/pulls/{number}/reviews
 ```
 
-Parse the JSON responses with `jq`. For each review comment, extract: `id` (needed for replies), `body`, `path`, `line` (or `original_line`), `diff_hunk`, and `user.login`. Retain the comment `id` throughout classification so it can be used in step 7.
+Parse the JSON responses with `jq`. For each review comment, extract: `id` (needed for replies), `body`, `path`, `line` (or `original_line`), `diff_hunk`, and `user.login`. Retain the comment `id` throughout classification so it can be used in step 8.
 
 ### 2. Filter out noise
 
@@ -44,7 +44,7 @@ Skip comments that are NOT substantive review feedback:
 - CI status comments
 - Auto-generated PR descriptions
 - Comments that are purely informational with no actionable feedback
-- Already-resolved review threads (use GraphQL `reviewThreads` query from step 7 to check `isResolved`)
+- Already-resolved review threads (use GraphQL `reviewThreads` query from step 8 to check `isResolved`)
 
 Keep comments from: human reviewers, automated code review sections (look for headings like "Blocker", "Warning", "Suggestion"), and code review bot comments with substantive feedback.
 
@@ -77,7 +77,7 @@ If `core:scope-statement-check` is available and a scope contract exists for thi
 
 If the skill is not available, or no contract exists for this branch, classify scope inline: read the contract at `.scope/<branch>.md` if present, apply the same In/Out/Ambiguous logic. If no contract exists at all, skip scope classification entirely and proceed. Suggest the user run `/scope-statement-check extract` for future branches.
 
-Out-of-scope findings default to **Defer** regardless of severity; the user can override case-by-case in step 5. When scope-statement-check ran, it pre-fills the reply template in step 7 with a generated deferral rationale. This is the single largest source of review-cycle waste — bots and reviewers consistently flag legitimately out-of-scope work, and a contract-based default removes the keystroke cost of explaining each one.
+Out-of-scope findings default to **Defer** regardless of severity; the user can override case-by-case in step 5. When scope-statement-check ran, it pre-fills the reply template in step 8 with a generated deferral rationale. This is the single largest source of review-cycle waste — bots and reviewers consistently flag legitimately out-of-scope work, and a contract-based default removes the keystroke cost of explaining each one.
 
 ### 4. Present the matrix
 
@@ -100,7 +100,7 @@ Below the table, provide a brief summary:
 
 ### 5. Prompt the user
 
-If all issues are already fixed (e.g. addressed in a prior commit), skip straight to step 7 -- do not prompt for a fix category.
+If all issues are already fixed (e.g. addressed in a prior commit), skip straight to step 8 -- do not prompt for a fix category. There is nothing to commit, so step 7 is skipped too.
 
 If every remaining issue is classified as **Fix now + Quick**, skip the prompt and fix them all -- the selection adds no value when there is only one sensible answer.
 
@@ -121,13 +121,24 @@ After the user selects a category:
 4. Run the project's test suite to verify nothing is broken (check CLAUDE.md for project-specific commands)
 5. Report which issues were fixed and which remain
 
-Do NOT commit -- the user will decide when to commit.
+Do NOT commit yet -- that happens in step 7.
 
 If a "Debatable" issue is included in the selection (via "All"), mention the tradeoff to the user before fixing and let them confirm.
 
-### 7. Update PR comments
+### 7. Commit and push fixes
 
-After fixes are applied, update the PR to reflect what was addressed.
+After all fixes are applied (and any project tests pass), commit and push the changes. This **must** happen before any PR comment activity in step 8 -- otherwise the resolved threads and "addressed" summary describe a diff that isn't on the branch yet, which misleads reviewers.
+
+1. **Check CI status first** -- `gh pr checks --required` on the open PR. If required checks are FAILING, the new commits are presumed to fix them; proceed. If checks are IN_PROGRESS or QUEUED, prefer to wait so this push doesn't stack on top of the in-flight run. Ask via `AskUserQuestion`: **Wait** / **Push now**.
+2. Stage the changed files by name (avoid `git add -A`).
+3. Commit with a Conventional Commits message summarising the fixes and naming the reviewer(s) being addressed (e.g. `fix(scope): address <reviewer> review on PR #N`). Append a `Co-Authored-By:` trailer using the current Claude model name from your runtime environment -- do not hardcode a stale version. Use a HEREDOC so multi-line formatting is preserved.
+4. Push to origin. **Separate Bash invocation from the commit -- never chained.** Chained `git commit && git push` violates the per-command allowlist pattern and breaks the inspect-between-steps discipline.
+
+If there are no local file changes (all issues were already fixed in a prior commit, or only Discuss/Optional items remained and the user opted not to fix them), skip this step.
+
+### 8. Update PR comments
+
+After fixes are committed and pushed (step 7), update the PR to reflect what was addressed.
 
 #### Resolve fixed comment threads (automatic)
 
@@ -191,9 +202,9 @@ Do NOT reply to:
 - Comments that were resolved (the diff speaks for itself)
 - Comments that already have a reply from the current authenticated user (check existing replies in the thread to avoid duplicate responses on repeated invocations)
 
-### 8. Post summary comment
+### 9. Post summary comment
 
-After all fixes, thread resolutions, and replies are complete, post a single summary comment on the PR. This gives reviewers a clear picture of what was addressed and what remains.
+After fixes are pushed (step 7) and threads/replies are handled (step 8), post a single summary comment on the PR. This gives reviewers a clear picture of what was addressed and what remains.
 
 Use `AskUserQuestion` to confirm before posting. Show the full rendered comment to the user first.
 
@@ -309,7 +320,6 @@ If tests failed and could not be resolved, always mark as not ready regardless o
 - Always read files before editing -- never propose blind changes
 - Deduplicate issues that are flagged by multiple reviewers -- note when multiple reviewers agree
 - If no PR is found for the current branch, tell the user and stop
-- Do not commit changes -- respect the user's commit batching preference
+- **Step 7 always commits and pushes when there are local changes** -- never resolve threads, post replies, or post the summary while uncommitted fix code sits in the working tree. The only optional gate in step 7 is the "Wait / Push now" question when CI checks are in-flight.
 - If the test suite fails after fixes, report the failure and attempt to resolve it
-- **Do not prompt to push** if the only actions taken were resolving threads and/or posting replies (no local code changes were made). Only mention pushing when files were actually modified.
 - **Never `@` mention bots or users** in the summary comment. Use plain names -- `@` mentions can trigger bot actions or unwanted notifications.
