@@ -118,7 +118,7 @@ Never call `gh issue create` without an explicit "Create as shown" choice.
 
 ### 6. Create
 
-On confirmation, write the body to a temp file and create the issue with a HEREDOC pattern so multi-line formatting is preserved:
+On confirmation, create the issue with a HEREDOC pattern so multi-line formatting is preserved:
 
 ```bash
 gh issue create \

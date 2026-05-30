@@ -10,7 +10,7 @@ The **universal-skills** marketplace is declared for Cursor at [`.cursor-plugin/
 
 Stack-agnostic skills for commit workflows, project planning, debugging, PR management, and documentation. Works with any language or framework.
 
-**13 skills:** commit, ship-it, start-work, whats-next, project-status, pr-description, skills-review, debug, pr-fix, document, improve-issues, cleanup, checkout
+**16 skills:** commit, ship-it, checkout, cleanup, debug, pr-fix, pr-review, start-work, whats-next, project-status, pr-description, document, improve-issues, new-issue, backlog-review, skills-review
 
 ### `infra` — Enterprise Infrastructure & DevOps
 
