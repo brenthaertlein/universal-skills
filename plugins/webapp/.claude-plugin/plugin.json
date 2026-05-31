@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "description": "Web application development skills for Claude Code — API review, architecture review, testing, coverage, migrations, design tokens, and a principal-frontend reviewer agent. Optimized for Next.js / TypeScript / React full-stack development.",
   "author": {
     "name": "Brent Haertlein"

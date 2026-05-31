@@ -12,7 +12,7 @@
       "name": "core",
       "source": "./plugins/core",
       "description": "Universal workflow skills — commit, ship, plan, debug, review. Stack-agnostic foundations that work with any project.",
-      "version": "1.0.0",
+      "version": "1.1.0",
       "category": "workflow",
       "keywords": ["workflow", "commit", "review", "plan", "debug"]
     },
@@ -20,7 +20,7 @@
       "name": "infra",
       "source": "./plugins/infra",
       "description": "Enterprise infrastructure skills — IaC validation, drift/cost/vulnerability triage, cloud IAM and Well-Architected reviews (AWS, GCP, Kubernetes), and baremetal hardening.",
-      "version": "1.2.0",
+      "version": "1.3.0",
       "category": "infrastructure",
       "keywords": ["infrastructure", "devops", "sre", "aws", "gcp", "kubernetes", "iac", "terraform", "security"]
     },
@@ -28,7 +28,7 @@
       "name": "webapp",
       "source": "./plugins/webapp",
       "description": "Web application development skills — API review, architecture review, testing, coverage, migrations, design tokens, and a principal-frontend reviewer agent. Optimized for Next.js / TypeScript / React full-stack development.",
-      "version": "1.1.0",
+      "version": "1.2.0",
       "category": "webapp",
       "keywords": ["webapp", "frontend", "nextjs", "typescript", "react", "testing", "api"]
     }

@@ -1,6 +1,6 @@
 {
   "name": "core",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Universal workflow skills — commit, ship, plan, debug, review. Stack-agnostic foundations that work with any project.",
   "author": {
     "name": "Brent Haertlein"
