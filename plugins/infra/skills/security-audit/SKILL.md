@@ -77,6 +77,18 @@ Check that none of the following file types are staged for commit:
 | `credentials`   | Generic credential files       |
 | `*.jks`         | Java keystores                 |
 
+## Senior Review
+
+After the scans complete, dispatch to the `appsec-engineer` subagent with the raw findings. Ask it to rank them by exploitability and blast radius — which secret or exposure is actually reachable and what an attacker reaches from it — and to flag any false positives among the [WARN]s. Integrate its prioritization into the report below; it does not change the verdict rules (a [BLOCK] is still a [BLOCK]).
+
+```
+Agent({
+  subagent_type: "appsec-engineer",
+  description: "Triage audit findings",
+  prompt: "Here are findings from a secrets/PII/infrastructure scan: <list with path:line and category>. Rank by exploitability and blast radius — for each credential or exposure, what can an attacker actually reach and do with it? Call out any [WARN] findings that are likely false positives (test fixtures, placeholders). Return findings in severity order with a one-line attack-path note for each real one."
+})
+```
+
 ## Output Format
 
 For each finding, report one of:

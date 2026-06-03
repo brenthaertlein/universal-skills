@@ -122,6 +122,18 @@ N issues — listed by issue number only: [#A](url), [#B](url), [#C](url), …
 
 Omit any section whose count is zero (replace with a single line: `No stale issues found.`, etc.).
 
+### Senior prioritization (dispatch)
+
+After building the dashboard, dispatch to the `engineering-lead` subagent with the bucketed issues. Ask it to rank which issues most deserve action now — by value, readiness, and cost of delay — and which can wait. Present its ranked shortlist as a "Recommended order of action" block beneath the dashboard. It advises on prioritization only; it does not replace the bucket classifications above or post anything.
+
+```
+Agent({
+  subagent_type: "engineering-lead",
+  description: "Prioritize backlog buckets",
+  prompt: "Here is a triaged backlog: <stale / duplicate / unclear / mis-labeled issues with titles, ages, and labels>. Rank the handful that most deserve action now versus later, by value, readiness, and cost of delay. For each, give a one-line rationale and the recommended action (close, groom, re-label, keep). Return a short ordered list."
+})
+```
+
 ## Phase 5: Offer to post triage comments
 
 For Stale / Duplicate / Unclear buckets, ask via `AskUserQuestion`:

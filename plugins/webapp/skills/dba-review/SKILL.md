@@ -59,6 +59,18 @@ Audit database schemas and queries for correctness, performance, and naming conv
 - Flag missing indexes on columns used in `WHERE`, `JOIN`, or `ORDER BY`.
 - Flag `ORDER BY` on unindexed columns for large tables.
 
+## Senior Review
+
+After the schema and query checks, dispatch to the `data-engineer` subagent with the findings. Ask it to apply its data-layer lens — index/query hygiene confirmed against the plan where possible, integrity guarantees that belong in the schema, and behavior at production row counts rather than dev scale — and to rank what it would block on. Integrate its top findings into the report below; do not replace the skill's [BLOCK]/[FAIL]/[WARN] verdict contract.
+
+```
+Agent({
+  subagent_type: "data-engineer",
+  description: "DBA senior review",
+  prompt: "Review these database findings: <schema and query issues with table/column/path:line>. Apply senior data-engineer scrutiny — index and query hygiene at production scale, integrity constraints that belong in the schema, N+1 and unbounded-result risks. Rank what you would block on versus hardening. Return findings in severity order, quoting the table, column, or query for each."
+})
+```
+
 ## Report Format
 
 ```

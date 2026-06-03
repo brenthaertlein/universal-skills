@@ -146,6 +146,18 @@ Beyond presence:
 - New conditional rendering → are both branches tested?
 - New endpoint or interface → does the test mock at the boundary or at internal functions (anti-pattern)?
 
+#### Dispatch to the senior engineer
+
+After the whole-file pass, dispatch to the `principal-engineer` subagent with the diff and the findings accumulated in Steps 5–6. Ask it to apply its correctness-and-root-cause lens to the highest-blast-radius changes and say what it would block on. Fold its top findings into the matrix in Step 9 alongside the focus-area findings — do not let it replace this skill's scope classification (Step 7) or verdict contract.
+
+```
+Agent({
+  subagent_type: "principal-engineer",
+  description: "Senior pass on PR diff",
+  prompt: "Review this PR diff: <summary of changed files + the focus-area and whole-file findings collected so far>. Apply senior judgment to correctness across edge cases, root cause (for any fix), failure handling, and blast radius. Identify what you would block the merge on versus what is nice-to-have. Quote path:line for each finding and return them in severity order."
+})
+```
+
 ### 7. Classify findings against scope
 
 For every finding from Steps 5 and 6, tag with a scope classification using the contract from Step 3:
