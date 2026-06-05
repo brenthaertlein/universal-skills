@@ -39,6 +39,7 @@ Stack-agnostic workflow skills for Claude Code. Works with any language, framewo
 | Skill | Command | Description |
 |-------|---------|-------------|
 | skills-review | `/skills-review` | Audit skills for overlap, gaps, and consistency |
+| learn | `/learn` | Promote durable lessons from project memory into CLAUDE.md / settings (with confirmation); file an issue for defects in this repo's own skills |
 
 ## Setup
 

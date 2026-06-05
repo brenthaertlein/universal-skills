@@ -10,7 +10,7 @@ Three plugins live here:
 
 | Plugin | Scope |
 |---|---|
-| `core` | Stack-agnostic workflow skills — `/start-work`, `/commit`, `/ship-it`, `/pr-fix`, `/pr-review`, `/checkout`, `/cleanup`, `/debug`, `/document`, `/improve-issues`, `/new-issue`, `/backlog-review`, `/pr-description`, `/project-status`, `/skills-review`, `/whats-next`, plus supporting skills |
+| `core` | Stack-agnostic workflow skills — `/start-work`, `/commit`, `/ship-it`, `/pr-fix`, `/pr-review`, `/checkout`, `/cleanup`, `/debug`, `/document`, `/improve-issues`, `/new-issue`, `/backlog-review`, `/pr-description`, `/project-status`, `/skills-review`, `/learn`, `/whats-next`, plus supporting skills |
 | `infra` | Infrastructure-focused reviews and operations — IaC, cloud (AWS / GCP), Kubernetes, Linux, Ansible, observability, DR, costs |
 | `webapp` | Web-application reviews and testing — API, DB, migrations, security, architecture, theming, a11y, e2e, mutation testing |
 
