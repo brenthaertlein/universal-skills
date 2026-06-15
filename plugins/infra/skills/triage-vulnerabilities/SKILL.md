@@ -95,13 +95,13 @@ Partition the sorted list into three buckets:
 
 ## Senior Review
 
-After ranking, dispatch to the `appsec-engineer` subagent with the bucketed rows. Ask it to sanity-check reachability — which CVEs sit in code paths actually exercised by a prod artifact versus theoretical — and to confirm the "Fix now" bucket reflects real exploitable risk. Integrate its read into the report below. It must **not** re-score severities (see Rule 5) or invent fix versions (Rule 4); it advises on prioritization and reachability only.
+After ranking, dispatch to the `appsec-engineer` subagent with the bucketed rows. Ask it to sanity-check reachability — which advisories (by normalized `id`, whether CVE, GHSA, or vendor) sit in code paths actually exercised by a prod artifact versus theoretical — and to confirm the "Fix now" bucket reflects real exploitable risk. Integrate its read into the report below. It must **not** re-score severities (see Rule 5) or invent fix versions (Rule 4); it advises on prioritization and reachability only.
 
 ```
 Agent({
   subagent_type: "appsec-engineer",
   description: "Sanity-check vuln triage",
-  prompt: "Here are triaged vulnerabilities in three buckets (Fix now / Fix this sprint / Accept risk), each with CVE, package, severity-as-given, fixed_in, and where it was found: <rows>. Without re-scoring severity, assess reachability — which are in paths actually exercised by a prod artifact versus theoretical — and confirm whether the 'Fix now' bucket reflects real exploitable risk. Flag any row whose bucket should change on reachability grounds, with a one-line attack-path rationale."
+  prompt: "Here are triaged vulnerabilities in three buckets (Fix now / Fix this sprint / Accept risk), each with id (CVE/GHSA/vendor), package, severity-as-given, fixed_in, and where it was found: <rows>. Without re-scoring severity, assess reachability — which are in paths actually exercised by a prod artifact versus theoretical — and confirm whether the 'Fix now' bucket reflects real exploitable risk. Flag any row whose bucket should change on reachability grounds, with a one-line attack-path rationale."
 })
 ```
 
