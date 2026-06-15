@@ -29,20 +29,20 @@ Resolve this project's memory directory from the working directory (the auto-mem
 echo "$HOME/.claude/projects/$(pwd | sed 's#/#-#g')/memory"
 ```
 
-Read `MEMORY.md` (the index) and every `*.md` memory file in that directory. For each file parse the frontmatter (`name`, `description`, `metadata.type`) and keep the body.
+Read `MEMORY.md` (the index) and every `*.md` memory file in that directory, **excluding `MEMORY.md` itself** (it is the index, not a memory entry). For each memory file parse the frontmatter (`name`, `description`, `metadata.type`) and keep the body.
 
 If the directory is missing or empty, report that there's nothing to learn from yet and stop.
 
 ### 2. Present the menu
 
-Show a table of memories grouped by `type`:
+Show a table of memories grouped by `metadata.type`:
 
 | Memory | Type | Summary | Proposed destination |
 |--------|------|---------|---------------------|
 
 The **Proposed destination** comes from the routing rules in step 3 — show your suggested home for each so the user can see the plan at a glance.
 
-Then ask via `AskUserQuestion` (multiSelect) which memories to learn from. Offer "all", a subset, or cancel. Only the selected memories proceed.
+Then ask via `AskUserQuestion` (multi-select) which memories to learn from. Offer "all", a subset, or cancel. Only the selected memories proceed.
 
 ### 3. Classify and route each selected memory
 
