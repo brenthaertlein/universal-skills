@@ -44,7 +44,15 @@ For modern Next.js / TypeScript / React full-stack development (Drizzle ORM, Pla
 claude plugins install <plugin-name>
 ```
 
-Each plugin ships a `/setup` command that adds the recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are intentionally excluded and will always prompt for approval.
+Once **core** is installed, run **`/onboard`** for a guided, multi-plugin setup: it picks an
+install scope (this project / all projects / both), surfaces each plugin's `MINDSET.md` as
+rationale, calibrates a **cautious / balanced / permissive** risk tier into a concrete
+allowlist plus extra guard hooks, and scaffolds or merges your `CLAUDE.md`. It is
+re-runnable — a second run detects the existing config and merges rather than overwrites.
+
+Prefer a quick per-plugin setup? Each plugin also ships a `/setup` command that adds the
+recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are
+intentionally excluded and will always prompt for approval.
 
 ### Cursor (IDE & CLI)
 

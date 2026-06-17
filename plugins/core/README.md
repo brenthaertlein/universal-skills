@@ -62,12 +62,20 @@ The skill owns the output format; the agent provides the reasoning lens.
 ### Meta
 | Skill | Command | Description |
 |-------|---------|-------------|
+| onboard | `/onboard` | Guided install: pick scope, select plugins (with MINDSET rationale), calibrate risk tolerance into an allowlist + hooks, and scaffold/merge CLAUDE.md |
 | skills-review | `/skills-review` | Audit skills for overlap, gaps, and consistency |
 | learn | `/learn` | Promote durable lessons from project memory into CLAUDE.md / settings (with confirmation); file an issue for defects in this repo's own skills |
 
 ## Setup
 
-Run `/setup` to automatically configure recommended permissions, or manually add to `.claude/settings.json`:
+**New here? Run `/onboard`** for a guided, multi-plugin install — it picks an install
+scope (this project / all projects / both), surfaces each plugin's `MINDSET.md` as
+rationale, calibrates a **cautious / balanced / permissive** risk tier into a concrete
+allowlist plus extra guard hooks, and scaffolds or merges your `CLAUDE.md`. It is
+re-runnable: a second run detects the existing config and merges rather than overwrites.
+
+For a quick single-plugin permission setup, run `/setup`, or manually add to
+`.claude/settings.json`:
 
 ```json
 {
@@ -107,6 +115,34 @@ Run `/setup` to automatically configure recommended permissions, or manually add
 ```
 
 Operations that modify state (commit, push, merge, PR create, issue edit, branch create) are intentionally excluded — you'll be prompted for approval each time.
+
+### Onboarding presets (for plugin authors)
+
+`/onboard` builds its risk-tiered allowlist + hooks from a per-plugin
+`onboard-presets.json` at each plugin's root. Each plugin owns its own slice, so the
+orchestrator stays generic. Schema:
+
+```json
+{
+  "plugin": "<name>",
+  "tiers": {
+    "cautious":   { "allow": ["Bash(...)"], "hooks": [ <PreToolUse hook object> ] },
+    "balanced":   { "allow": ["Bash(...)"], "hooks": [ ... ] },
+    "permissive": { "allow": ["Bash(...)"], "hooks": [] }
+  }
+}
+```
+
+- `allow` entries are standard Claude Code permission strings; `balanced` should mirror the
+  plugin's `/setup` allowlist so `/setup`-only users see no regression.
+- `hooks` are **additional** `PreToolUse` guard objects layered into `settings.json` on top
+  of the plugin's always-on `hooks/hooks.json` floor. Tag each hook's `command` with a
+  stable `[onboard:<tier>:<id>]` marker so re-runs dedupe idempotently.
+- Convention: `cautious` ⊇ guards of `balanced`; `permissive` usually adds no extra hooks
+  (the floor is the safety net).
+
+A plugin without an `onboard-presets.json` is still selectable in `/onboard`; only its
+allowlist/hook configuration is skipped (its hooks floor still applies once enabled).
 
 ## Development Workflow
 
