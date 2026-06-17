@@ -45,7 +45,7 @@
         },
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(aws|gcloud)[^|]*(create|put|update|delete|set-iam-policy|add-iam-policy-binding|remove-iam-policy-binding)\" 2>/dev/null; then echo \"[onboard:cautious:cloud-mutate] Mutating cloud CLI verbs (create/put/update/delete/iam) are blocked at the cautious tier. Use describe/get/list or ask the user for explicit approval.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(aws|gcloud)[^|]* (create|put|update|delete|set-iam-policy|add-iam-policy-binding|remove-iam-policy-binding)\" 2>/dev/null; then echo \"[onboard:cautious:cloud-mutate] Mutating cloud CLI verbs (create/put/update/delete/iam) are blocked at the cautious tier. Use describe/get/list or ask the user for explicit approval.\" && exit 2; fi'",
           "timeout": 5000
         },
         {
@@ -142,7 +142,7 @@
         },
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(aws|gcloud)[^|]*delete\" 2>/dev/null; then echo \"[onboard:balanced:cloud-delete] Cloud CLI delete verbs are blocked at the balanced tier. Ask the user for explicit approval.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(aws|gcloud)[^|]* delete\" 2>/dev/null; then echo \"[onboard:balanced:cloud-delete] Cloud CLI delete verbs are blocked at the balanced tier. Ask the user for explicit approval.\" && exit 2; fi'",
           "timeout": 5000
         }
       ]

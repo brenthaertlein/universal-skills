@@ -91,8 +91,8 @@ Record the choice; it determines the target file(s) in Phase 3 and 5.
 1. Read `.claude-plugin/marketplace.json`; list every plugin with its catalog
    `description`.
 2. For each plugin, if `plugins/<name>/MINDSET.md` exists, surface a 2–4 line excerpt of
-   its opening "Mindset" rationale — not just the name. If a plugin has no `MINDSET.md`
-   (e.g. `core`), show its catalog description as the rationale instead.
+   its opening "Mindset" rationale — not just the name. If a plugin has no `MINDSET.md`,
+   show its catalog `description` as the rationale instead.
 3. `AskUserQuestion` (multiSelect) — "Which plugins do you want to configure?" with one
    option per plugin. Default-select `core`. Only plugins that have an
    `onboard-presets.json` are eligible for allowlist/hook configuration; if a selected
