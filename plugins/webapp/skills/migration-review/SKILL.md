@@ -60,12 +60,12 @@ Migrations should be **additive by default**. Destructive changes require a two-
 
 ### Senior Review
 
-Dispatch to the `principal-frontend` subagent with the findings collected above. Ask it to apply its senior lens — migration safety, two-phase deploys, data integrity under concurrent writes — to the findings. Integrate its top findings into the Report Format below; do not replace the skill's verdict contract.
+Dispatch to the `data-engineer` subagent with the findings collected above. Ask it to apply its data-layer lens — migration safety, lock behavior at production scale, two-phase deploys, and data integrity under concurrent writes — to the findings. Integrate its top findings into the Report Format below; do not replace the skill's verdict contract.
 
 Invocation:
 ```
 Agent({
-  subagent_type: "principal-frontend",
+  subagent_type: "data-engineer",
   description: "Migration senior review",
   prompt: "Review these migration findings: <summary of ordering, data-migration, index-safety, rollback, and schema-diff findings>. Apply senior scrutiny to migration safety, two-phase deploy sequencing (code-before-schema vs schema-before-code), and data integrity under concurrent writes during the rollout window. Return top deploy risks in severity order."
 })

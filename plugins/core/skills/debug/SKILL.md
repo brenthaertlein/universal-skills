@@ -165,7 +165,16 @@ If you have attempted 3 or more fixes and the issue persists:
 2. Count the fixes attempted and what each revealed.
 3. Look for the pattern -- each fix revealing a new problem in a different place is a sign of an architectural issue, not a point bug.
 4. Question fundamentals: Is the pattern/approach sound, or are we fixing symptoms of a wrong design?
-5. Discuss with the user before attempting more fixes.
+5. **Get a senior second opinion.** Dispatch to the `principal-engineer` subagent with the evidence and the fixes already attempted. Ask it to reason about root cause versus symptom and whether the failures point at an architectural problem rather than a point bug. Integrate its read into the discussion below — it does not replace the user conversation.
+
+   ```
+   Agent({
+     subagent_type: "principal-engineer",
+     description: "Senior debugging consult",
+     prompt: "We have attempted N fixes for this bug and it persists. Symptom: <description>. Evidence: <logs/diffs/error messages>. Fixes tried and what each revealed: <list>. Reason from first principles about the true root cause. Is this a point bug or an architectural problem? What single hypothesis would you test next, and what evidence would confirm it?"
+   })
+   ```
+6. Discuss with the user before attempting more fixes.
 
 ## Ground Rules
 

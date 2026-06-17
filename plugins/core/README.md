@@ -2,6 +2,30 @@
 
 Stack-agnostic workflow skills for Claude Code. Works with any language, framework, or project type.
 
+## Agents
+
+| Agent | Description |
+|-------|-------------|
+| `principal-engineer` | Principal-level, stack-agnostic software engineer. Dispatch via `Agent({subagent_type: "principal-engineer"})` from skills needing senior judgment on a change or a stubborn bug — correctness across edge cases, root cause versus symptom, blast radius. Also invocable directly via `/agents`. |
+| `engineering-lead` | Senior engineering lead / delivery manager. Dispatch via `Agent({subagent_type: "engineering-lead"})` from skills needing prioritization judgment — what to do next, what to cut, how to sequence work, where a project really stands. Also invocable directly via `/agents`. |
+
+### How skills use the agents
+
+Dispatch to an agent when the decision needs senior judgment rather than a mechanical pass.
+
+`principal-engineer`:
+
+- `pr-review` — a senior correctness/blast-radius pass over the whole diff
+- `debug` — a root-cause-versus-symptom consult when fixes keep failing
+
+`engineering-lead`:
+
+- `backlog-review` — rank which issues most deserve action now
+- `project-status` — name the single most important next thing and the top blockers
+- `whats-next` — pick the highest-leverage next task for the user
+
+The skill owns the output format; the agent provides the reasoning lens.
+
 ## Skills
 
 ### Workflow

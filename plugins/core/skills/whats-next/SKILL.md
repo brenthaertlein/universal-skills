@@ -120,6 +120,16 @@ Based on git history, provide a brief coaching summary (4-6 sentences):
 
 ## Phase 5: Recommendation
 
+Before committing to a recommendation, dispatch to the `engineering-lead` subagent with the categorized candidates (Quick Wins / High Value / Maintenance) and the user's stated preferences from Phase 1. Ask it to pick the single highest-leverage next task and justify why it beats the runners-up, weighing value, readiness, and the user's context. Use its pick to inform the recommendation below — you may override it, but say why if you do.
+
+```
+Agent({
+  subagent_type: "engineering-lead",
+  description: "Pick the next task",
+  prompt: "Candidate work items: <Quick Wins, High Value, Maintenance lists with sources>. User preferences/context: <from the questionnaire>. Pick the ONE highest-leverage task to do next and justify why it beats the runners-up, weighing value, readiness, effort, and the user's stated context. Return the pick plus a one-line rationale for the top 2-3 alternatives."
+})
+```
+
 Recommend ONE specific task. Match verbosity to complexity:
 
 - **For quick wins**: 1-2 sentences, link to source

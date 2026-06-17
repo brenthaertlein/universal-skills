@@ -67,16 +67,20 @@ Baremetal skills read Ansible inventory, roles, playbooks, and fact caches from 
 | Agent | Description |
 |-------|-------------|
 | `principal-sre` | Principal-level sysadmin / DevOps / SRE reviewer. Dispatch via `Agent({subagent_type: "principal-sre"})` from skills needing senior production scrutiny (blast radius, postmortems, DR readiness, runbook reviews). Also invocable by the user via `/agents`. |
+| `appsec-engineer` | Principal-level application & cloud security engineer. Dispatch via `Agent({subagent_type: "appsec-engineer"})` from skills needing adversarial security scrutiny — exploitability triage, blast radius of a compromised credential, real risk versus checkbox noise. Also invocable directly via `/agents`. |
 
-### How skills use the agent
+### How skills use the agents
 
-Skills that benefit from principal-level reasoning should dispatch to `principal-sre` when:
+Skills that benefit from principal-level reasoning should dispatch to an agent when:
 
 - The decision is architectural, not line-level (e.g., "is this DR plan actually tested?")
 - Evidence needs synthesis across multiple sources (logs, alerts, deploy history)
-- A verdict requires production-operator judgment, not just a checklist
+- A verdict requires production-operator or security judgment, not just a checklist
 
-Examples: `draft-postmortem`, `assess-change-risk`, `review-disaster-recovery`, `review-observability`. Skills stay in charge of the output format; the agent provides the reasoning lens.
+`principal-sre` examples: `draft-postmortem`, `assess-change-risk`, `review-disaster-recovery`, `review-observability`.
+`appsec-engineer` examples: `security-audit` (rank findings by exploitability), `triage-vulnerabilities` (sanity-check reachability without re-scoring).
+
+Skills stay in charge of the output format; the agent provides the reasoning lens.
 
 ## Helper scripts
 

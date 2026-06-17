@@ -102,3 +102,15 @@ For tables with >100k rows, `CREATE INDEX` locks the table. Use a custom migrati
    CREATE INDEX CONCURRENTLY "idx_name" ON "my_table" ("column_name");
    ```
    Note: `CONCURRENTLY` cannot run inside a transaction. Ensure your migration runner does not wrap this in a transaction block.
+
+## Senior Review (before applying)
+
+Before applying a generated migration to anything beyond local dev — especially one touching a large or high-traffic table — dispatch the migration SQL to the `data-engineer` subagent for a safety pass. Ask it to check lock behavior and duration at production row counts, zero-downtime (expand/contract) compatibility with currently-running code, backfill strategy for any data change, and whether the rollback path is sound. Act on its findings before you run the migration; it reviews, it does not apply.
+
+```
+Agent({
+  subagent_type: "data-engineer",
+  description: "Migration safety review",
+  prompt: "Review this Drizzle migration before it is applied: <the generated SQL and the table's approximate row count if known>. Assess lock type and duration at production scale, zero-downtime compatibility with old code still running during rollout, backfill safety for any data change, and the rollback path. Return blocking risks first, then hardening suggestions, quoting the specific statement for each."
+})
+```

@@ -342,6 +342,18 @@ No stale branches found. All active branches have open PRs.
 | Pick your next task | `/whats-next` |
 ```
 
+### Senior assessment (dispatch)
+
+After presenting the dashboard, dispatch to the `engineering-lead` subagent with the summarized state — open PRs and their CI/review/feedback status, critical unstarted issues, and stale branches. Ask it to name the single most important thing to do next and the top blockers to clear, reasoning about critical path and cost of delay. Present its read as a short "Lead's take" block beneath the dashboard. It advises only; it does not modify PRs, issues, or branches.
+
+```
+Agent({
+  subagent_type: "engineering-lead",
+  description: "Assess project state",
+  prompt: "Here is the current project state: <open PRs with CI/review/feedback status, critical unstarted issues, stale branches>. What is the single most important thing to do next, and why does it beat the alternatives? What are the top blockers to clear, and who/what owns each? Reason about critical path and cost of delay. Return a recommendation plus a ranked shortlist of next actions."
+})
+```
+
 ## Phase 6: Interactive Follow-Up
 
 After presenting the dashboard, use `AskUserQuestion`:

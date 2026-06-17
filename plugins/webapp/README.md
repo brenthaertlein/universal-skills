@@ -7,16 +7,24 @@ Skills for modern web application development. Optimized for Next.js full-stack 
 | Agent | Description |
 |-------|-------------|
 | `principal-frontend` | Principal-level TypeScript / Node.js / Next.js / React reviewer. Dispatch via `Agent({subagent_type: "principal-frontend"})` from skills needing senior architectural scrutiny — server/client boundary, data-fetching strategy, rendering tradeoffs, accessibility, performance budget. Also invocable directly via `/agents`. |
+| `data-engineer` | Principal-level data / database engineer. Dispatch via `Agent({subagent_type: "data-engineer"})` from skills needing senior data-layer scrutiny — lock behavior, zero-downtime migrations, data integrity, index and query hygiene at production scale. Also invocable directly via `/agents`. |
 
-### How skills use the agent
+### How skills use the agents
 
-Dispatch to `principal-frontend` when a review needs senior judgment rather than a line-level checklist:
+Dispatch to an agent when a review needs senior judgment rather than a line-level checklist.
+
+`principal-frontend`:
 
 - `architecture-review` — server/client boundary correctness, import direction, rendering strategy
 - `api-review` — type-safety at the boundary, error-handling architecture
 - `best-practices` — composition and hook discipline decisions
 - `security-review` — XSS sinks and auth posture at scale
-- `migration-review` — migration safety and two-phase deploy reasoning
+
+`data-engineer`:
+
+- `dba-review` — index/query hygiene and integrity at production scale
+- `migration-review` — migration safety, lock behavior, two-phase deploy reasoning
+- `drizzle-sql-migration` — pre-apply safety pass on a generated migration
 
 The skill owns the output format; the agent provides the reasoning lens.
 
