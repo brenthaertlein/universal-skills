@@ -243,10 +243,14 @@ progresses, and finalized with outcomes at `/pr-fix` and `/ship-it`. `/document`
 remains the source of truth for the doc *format*; this skill detects the gap and
 seeds the file, it does not restate the template.
 
-**At branch creation, before working any step**, initiate the journal:
+**When the branch enters active use — whether newly created or an existing one
+being resumed — before working any step**, initiate the journal:
 
-1. Check whether `docs/issues/{number}-{slug}.md` already exists (issue-based work).
-   Derive `{slug}` from the issue title — kebab-case, 2-4 words — matching
+1. Check whether a `docs/issues/{number}-*.md` doc already exists (issue-based
+   work). Match on the issue number, not an exact slug: `/document` may have
+   created the doc with a different slug, and matching the exact
+   `{number}-{slug}.md` would miss it and spawn a duplicate. Only when creating a
+   new doc, derive `{slug}` from the issue title (kebab-case, 2-4 words) per
    `/document`'s convention.
 2. If it does not exist, soft-prompt with `AskUserQuestion` — never block:
    - **Create journal now** — seed `docs/issues/{number}-{slug}.md` with the
@@ -316,7 +320,7 @@ Stop. Plan file remains at `.plans/<slug>.md` for later use.
 - Respect existing branches — offer to reuse if an open PR exists
 - Do not over-explore — Phase 3 should take 2-3 minutes, not 10
 - Plan file is persistent — do not delete after implementation
-- Maintain the session journal — `docs/issues/{number}-{slug}.md` is a living
+- Maintain the session journal — `docs/issues/{number}-*.md` is a living
   record of intent, decisions, and outcomes; keep it current as work progresses
   (see "Journaling the session"). Soft, never blocking.
 - Batch edits — do not commit after every small change
