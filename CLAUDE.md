@@ -51,7 +51,7 @@ Configuration keys consumed by skills in this repo. Defaults are baked into each
 
 ### `pr-review.focus-areas` (`/pr-review`)
 
-Use defaults. The four baked-in defaults (Security / Architecture / Tests / Docs) plus every focus area discovered via the `[pr-review-focus-area: <Name>]` marker on installed skills cover this repo's needs. The marker is documented in `plugins/core/skills/pr-review/SKILL.md`.
+Use defaults. The five baked-in defaults (Security / Architecture / Tests / Docs / Design Altitude) plus every focus area discovered via the `[pr-review-focus-area: <Name>]` marker on installed skills cover this repo's needs. The marker is documented in `plugins/core/skills/pr-review/SKILL.md`.
 
 ### `ship-it.ci-gate` (`/ship-it`)
 
@@ -79,7 +79,7 @@ For anyone adding a new skill that wants to contribute to `/pr-review`:
 
 1. Pick a stack-agnostic display name (avoid leaking your stack into the marketplace).
 2. Prefix the skill's `description:` value with `[pr-review-focus-area: <Display Name>] ` (note the trailing space before the regular description).
-3. Choose a display name that either complements the four baked-in defaults (Security / Architecture / Tests / Docs) or stands on its own. Same display name as a default explicitly overrides the senior-engineering fallback for that name; distinct name surfaces as a separate focus area.
+3. Choose a display name that either complements the five baked-in defaults (Security / Architecture / Tests / Docs / Design Altitude) or stands on its own. Same display name as a default explicitly overrides the senior-engineering fallback for that name; distinct name surfaces as a separate focus area.
 
 For anyone adding any skill at all:
 

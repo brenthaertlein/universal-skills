@@ -70,11 +70,12 @@ If `/scope-statement-check` is not available, skip and rely on judgment in Step 
 
 Assemble the list of focus areas in this order:
 
-1. **Four baked-in defaults** (always present unless replaced by CLAUDE.md):
+1. **Baked-in defaults** (always present unless replaced by CLAUDE.md):
    - **Security** — auth, input validation, secrets, data exposure
    - **Architecture** — boundaries, layering, dependency direction, complexity
    - **Tests** — coverage of new behavior, regression coverage, test quality
    - **Docs** — README, inline comments, accuracy of changed-area documentation
+   - **Design Altitude** — right layer, call-site leveling, domain-named extraction, investment proportional to the code's lifespan (covered by the senior pass in Step 6)
 2. **Contributing skills discovered at runtime.** Scan the available-skills list from the current session context. For every skill whose `description` field begins with the marker `[pr-review-focus-area: <Name>]`, add `<Name>` as a focus area and record the skill's fully-qualified name (e.g., `infra:review-aws-iam`) so Step 5 can invoke it.
 3. **CLAUDE.md overrides.** If `pr-review.focus-areas` is defined, apply it: entries can replace the merged list entirely, reorder it, or add to it. Last-wins on display-name collisions; surface the conflict in the AskUserQuestion description.
 
@@ -145,6 +146,18 @@ Beyond presence:
 - Bug fix → is there a regression test that would fail without the fix?
 - New conditional rendering → are both branches tested?
 - New endpoint or interface → does the test mock at the boundary or at internal functions (anti-pattern)?
+
+#### Design altitude & lifespan
+
+Execution polish — functional tests, high coverage, good naming, clean styling — is not a verdict on design. A diff can be internally correct and fully tested while solving the problem at the wrong altitude. Grade design **separately** from execution, and never conclude "clean" without answering: is this at the right layer, and is the investment proportional to the code's expected lifespan? Do not anchor on the author's self-assessment ("scoped, gated, zero blockers") — that describes execution, not altitude.
+
+- **Right layer & proportional investment.** Before signing off, ask the two questions explicitly. A change that earns top marks on the smell table above can still be mis-leveled. "Well-executed" answers neither question.
+- **Price the call site, not just the extracted helper.** A consumer that reaches across several unrelated subsystems to derive a single value is mis-leveled even when the helper it calls is pure and fully tested. Judge where the work lives, not only how cleanly the leaf was written.
+- **Name extractions after the domain concept, not the consuming caller's question.** An extraction named for the question one caller asks relocates the coupling into a new unit instead of resolving it. A domain-named seam can be reused; a caller-named one just moves the smell.
+- **Recurrence is evidence *for* extraction.** The same inline predicate appearing at several call sites argues for a shared concept, not against touching it. "Follows the existing convention" is not exculpatory when the convention is itself the smell being propagated.
+- **Treat flag-gated / dual-path / backward-compat code as a question, not a virtue.** Scaffolding built for a path slated for near-term removal is cost, not safety. Weigh it against the path's remaining lifespan rather than praising "no breaking changes" — durable backward-compat and soon-to-be-deleted dual paths deserve opposite verdicts.
+
+State every altitude finding abstractly, the same as any other — point at the layering or lifespan problem, not at a borrowed example.
 
 #### Dispatch to the senior engineer
 
@@ -310,7 +323,7 @@ Discovery is runtime — `/pr-review` scans the harness-provided available-skill
 | 3 | Extract scope contract | `/scope-statement-check extract` |
 | 4 | Build focus-area list + ask | `AskUserQuestion` |
 | 5 | Run focus-area skills (scoped) | discovered or default skills |
-| 6 | Senior-engineering pass | Read whole files; apply judgment table |
+| 6 | Senior-engineering pass | Read whole files; apply judgment table + design altitude/lifespan layer |
 | 7 | Classify scope | `/scope-statement-check classify` |
 | 8 | Cross-check autonomous reviewer (conditional) | `gh api .../reviews` |
 | 9 | Present matrix | output + `AskUserQuestion` (severity tier) |
