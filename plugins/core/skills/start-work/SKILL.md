@@ -235,16 +235,56 @@ Display the full plan, then present these options:
 4. **Revise with feedback** — Refine the plan based on user input
 5. **Cancel** — Stop (plan file remains for later)
 
+### Journaling the session (Options 1 & 2)
+
+`/start-work` opens the working journal that `/document` formalizes. Treat it as a
+**living document** — seeded with intent here, grown with decisions as work
+progresses, and finalized with outcomes at `/pr-fix` and `/ship-it`. `/document`
+remains the source of truth for the doc *format*; this skill detects the gap and
+seeds the file, it does not restate the template.
+
+**At branch creation, before working any step**, initiate the journal:
+
+1. Check whether `docs/issues/{number}-{slug}.md` already exists (issue-based work).
+   Derive `{slug}` from the issue title — kebab-case, 2-4 words — matching
+   `/document`'s convention.
+2. If it does not exist, soft-prompt with `AskUserQuestion` — never block:
+   - **Create journal now** — seed `docs/issues/{number}-{slug}.md` with the
+     session intent from the approved plan (what this work is, why, and the
+     approach chosen), leaving room for a running work log and a final outcomes
+     section. Use `/document`'s issue-doc format as the canonical template.
+   - **Already covered elsewhere** — a doc for this work exists under another
+     path; record where and proceed.
+   - **Skip for now** — proceed without one; the reminders in `/pr-fix` and
+     `/ship-it` will resurface it.
+3. For **software / feature work**, also check whether a `docs/features/` entry
+   exists for the area being changed, then either:
+   - **New feature** — create `docs/features/{name}.md`;
+   - **Enhancement to a documented feature** — update the existing concept doc;
+   - **Enhancement to an undocumented feature** — create a scoped
+     `docs/features/` doc.
+
+   Delegate the actual format and creation to `/document`. Skip this entirely for
+   skill, documentation, or CI/config-only changes — `/document` excludes those,
+   so there is nothing to document as a feature.
+
+As you work through the plan's steps, append the meaningful decisions, approaches
+considered, and rationale (developer and AI) to the journal — the *why*, not just
+the diff. This running work log is what the journal exists to hold.
+
 ### Option 1 — Start implementation:
 
 1. Check for existing branches, offer to reuse or create new from `origin/main`
 2. `git fetch origin main && git checkout -b <branch> origin/main`
-3. Work through each step, briefly summarize after each
-4. If `superpowers:test-driven-development` is available, apply the TDD cycle for
+3. Initiate the session journal — see "Journaling the session (Options 1 & 2)" above.
+4. Work through each step, briefly summarize after each — and record meaningful
+   decisions, approaches considered, and the rationale behind developer + AI
+   choices in the session journal as you go.
+5. If `superpowers:test-driven-development` is available, apply the TDD cycle for
    each implementation step — write the failing test first, verify it fails,
    implement minimum to pass, verify it passes.
-5. Run project-defined checks after completing all steps
-6. Do NOT commit — suggest `/commit` when ready
+6. Run project-defined checks after completing all steps
+7. Do NOT commit — suggest `/commit` when ready
 
 ### Option 2 — Auto edits:
 
@@ -276,6 +316,9 @@ Stop. Plan file remains at `.plans/<slug>.md` for later use.
 - Respect existing branches — offer to reuse if an open PR exists
 - Do not over-explore — Phase 3 should take 2-3 minutes, not 10
 - Plan file is persistent — do not delete after implementation
+- Maintain the session journal — `docs/issues/{number}-{slug}.md` is a living
+  record of intent, decisions, and outcomes; keep it current as work progresses
+  (see "Journaling the session"). Soft, never blocking.
 - Batch edits — do not commit after every small change
 - Never print or display secrets
 - Respect any access rules or safety constraints defined in CLAUDE.md

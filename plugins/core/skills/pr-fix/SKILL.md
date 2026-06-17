@@ -322,4 +322,7 @@ If tests failed and could not be resolved, always mark as not ready regardless o
 - If no PR is found for the current branch, tell the user and stop
 - **Step 7 always commits and pushes when there are local changes** -- never resolve threads, post replies, or post the summary while uncommitted fix code sits in the working tree. The only optional gate in step 7 is the "Wait / Push now" question when CI checks are in-flight.
 - If the test suite fails after fixes, report the failure and attempt to resolve it
+- **Update the `docs/` journal before closing the loop** — if this branch has a
+  `docs/issues/` or `docs/features/` doc (see `/document`), nudge the user to
+  record what was addressed in this round. Soft reminder, never a blocking gate.
 - **Never `@` mention bots or users** in the summary comment. Use plain names -- `@` mentions can trigger bot actions or unwanted notifications.
