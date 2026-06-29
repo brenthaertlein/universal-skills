@@ -28,12 +28,12 @@
       "hooks": [
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"\\brm +(-[a-zA-Z]*r|-[a-zA-Z]*f|--recursive|--force)\" 2>/dev/null; then echo \"[onboard:cautious:rm-recursive] Recursive/forced rm is blocked at the cautious tier. Delete specific paths or ask the user for explicit approval.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(^|[^[:alnum:]_])rm +(-[a-zA-Z]*r|-[a-zA-Z]*f|--recursive|--force)\" 2>/dev/null; then echo \"[onboard:cautious:rm-recursive] Recursive/forced rm is blocked at the cautious tier. Delete specific paths or ask the user for explicit approval.\" && exit 2; fi'",
           "timeout": 5000
         },
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"\\bsudo\\b\" 2>/dev/null; then echo \"[onboard:cautious:sudo] sudo is blocked at the cautious tier. Ask the user to run privileged commands themselves.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(^|[^[:alnum:]_])sudo([^[:alnum:]_]|$)\" 2>/dev/null; then echo \"[onboard:cautious:sudo] sudo is blocked at the cautious tier. Ask the user to run privileged commands themselves.\" && exit 2; fi'",
           "timeout": 5000
         },
         {
@@ -48,7 +48,7 @@
         },
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git push.*(--force|--force-with-lease|-f\\b)\" 2>/dev/null; then echo \"[onboard:cautious:force-push] Forced push is blocked at the cautious tier. Ask the user for explicit approval.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"git push[^|]*(--force|--force-with-lease|-f([^[:alnum:]_]|$))\" 2>/dev/null; then echo \"[onboard:cautious:force-push] Forced push is blocked at the cautious tier. Ask the user for explicit approval.\" && exit 2; fi'",
           "timeout": 5000
         }
       ]
@@ -87,7 +87,7 @@
       "hooks": [
         {
           "type": "command",
-          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"\\brm +-[a-zA-Z]*r[a-zA-Z]*f|\\brm +-[a-zA-Z]*f[a-zA-Z]*r\" 2>/dev/null; then echo \"[onboard:balanced:rm-rf] rm -rf is blocked at the balanced tier. Delete specific paths or ask the user for explicit approval.\" && exit 2; fi'",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"(^|[^[:alnum:]_])rm +-[a-zA-Z]*r[a-zA-Z]*f|(^|[^[:alnum:]_])rm +-[a-zA-Z]*f[a-zA-Z]*r\" 2>/dev/null; then echo \"[onboard:balanced:rm-rf] rm -rf is blocked at the balanced tier. Delete specific paths or ask the user for explicit approval.\" && exit 2; fi'",
           "timeout": 5000
         },
         {
