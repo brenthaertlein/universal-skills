@@ -92,4 +92,4 @@ For anyone adding any skill at all:
 - `plugins/core/README.md` — full command reference for `core`.
 - `plugins/infra/README.md` — `infra` plugin overview.
 - `plugins/webapp/README.md` — `webapp` plugin overview.
-- `plugins/core/commands/setup.md` — recommended allowlist for `.claude/settings.json`.
+- `plugins/core/skills/onboard/SKILL.md` — the `/onboard` guided-install skill; the `balanced` tier of each plugin's `onboard-presets.json` is the canonical read-only allowlist for `.claude/settings.json`.

@@ -71,7 +71,9 @@ The skill owns the output format; the agent provides the reasoning lens.
 
 ## Setup
 
-Run `/setup` to automatically configure recommended permissions, or manually add to `.claude/settings.json`:
+Run **`/onboard`** (from the core plugin) to configure recommended permissions for webapp along
+with any other installed universal-skills plugins in one guided flow. Prefer to do it by hand?
+The canonical read-only allow-list is the `balanced` tier of [`onboard-presets.json`](onboard-presets.json) — copy its `allow` entries into `.claude/settings.json`:
 
 ```json
 {

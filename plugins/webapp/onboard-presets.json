@@ -1,0 +1,70 @@
+{
+  "plugin": "webapp",
+  "description": "Risk-tiered allowlist + extra PreToolUse guard hooks for the webapp plugin. Consumed by /onboard. balanced is the canonical read-only webapp allowlist (it replaces the old /setup command). cautious narrows to fast read-only checks; permissive adds broader build/test probes. Hooks hard-block publish/migration/expensive mutations per tier on top of the plugin floor.",
+  "tiers": {
+    "cautious": {
+      "allow": [
+        "Bash(npm test*)",
+        "Bash(npm run lint*)",
+        "Bash(npx tsc --noEmit*)"
+      ],
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"npm publish|yarn publish|pnpm publish\" 2>/dev/null; then echo \"[onboard:cautious:npm-publish] Package publish is blocked at the cautious tier. Ask the user for explicit approval.\" && exit 2; fi'",
+          "timeout": 5000
+        },
+        {
+          "type": "command",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"drizzle-kit (generate|migrate|push|drop)|prisma migrate|prisma db push\" 2>/dev/null; then echo \"[onboard:cautious:db-migration] Schema/migration commands are blocked at the cautious tier. Review the generated SQL, then ask the user for explicit approval.\" && exit 2; fi'",
+          "timeout": 5000
+        },
+        {
+          "type": "command",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"rm +(-[a-zA-Z]*r|-[a-zA-Z]*f)[^|]*node_modules\" 2>/dev/null; then echo \"[onboard:cautious:rm-node-modules] Recursive deletion of node_modules is blocked at the cautious tier. Ask the user for explicit approval.\" && exit 2; fi'",
+          "timeout": 5000
+        }
+      ]
+    },
+    "balanced": {
+      "allow": [
+        "Bash(npm test*)",
+        "Bash(npm run lint*)",
+        "Bash(npm run format:check*)",
+        "Bash(npm run e2e*)",
+        "Bash(npx tsc --noEmit*)",
+        "Bash(npx knip*)"
+      ],
+      "hooks": [
+        {
+          "type": "command",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"npm publish|yarn publish|pnpm publish\" 2>/dev/null; then echo \"[onboard:balanced:npm-publish] Package publish is blocked at the balanced tier. Ask the user for explicit approval.\" && exit 2; fi'",
+          "timeout": 5000
+        },
+        {
+          "type": "command",
+          "command": "bash -c 'if echo \"$CLAUDE_TOOL_INPUT\" | grep -qE \"drizzle-kit (generate|migrate|push|drop)|prisma migrate|prisma db push\" 2>/dev/null; then echo \"[onboard:balanced:db-migration] Schema/migration commands are blocked at the balanced tier. Review the generated SQL, then ask the user for explicit approval.\" && exit 2; fi'",
+          "timeout": 5000
+        }
+      ]
+    },
+    "permissive": {
+      "allow": [
+        "Bash(npm test*)",
+        "Bash(npm run test*)",
+        "Bash(npm run lint*)",
+        "Bash(npm run format:check*)",
+        "Bash(npm run e2e*)",
+        "Bash(npm run build*)",
+        "Bash(npm run typecheck*)",
+        "Bash(npx tsc --noEmit*)",
+        "Bash(npx knip*)",
+        "Bash(npx vitest*)",
+        "Bash(npx playwright test*)",
+        "Bash(npx prettier --check*)",
+        "Bash(npx eslint*)"
+      ],
+      "hooks": []
+    }
+  }
+}
