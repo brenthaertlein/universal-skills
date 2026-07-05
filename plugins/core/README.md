@@ -74,8 +74,9 @@ rationale, calibrates a **cautious / balanced / permissive** risk tier into a co
 allowlist plus extra guard hooks, and scaffolds or merges your `CLAUDE.md`. It is
 re-runnable: a second run detects the existing config and merges rather than overwrites.
 
-For a quick single-plugin permission setup, run `/setup`, or manually add to
-`.claude/settings.json`:
+`/onboard` replaces the old per-plugin `/setup` commands. Prefer to configure permissions by
+hand? The `balanced` risk tier in `plugins/core/onboard-presets.json` is the canonical
+read-only allowlist — copy its `allow` entries into `.claude/settings.json`:
 
 ```json
 {
@@ -133,8 +134,9 @@ orchestrator stays generic. Schema:
 }
 ```
 
-- `allow` entries are standard Claude Code permission strings; `balanced` should mirror the
-  plugin's `/setup` allowlist so `/setup`-only users see no regression.
+- `allow` entries are standard Claude Code permission strings; the `balanced` tier is the
+  canonical read-only allowlist for the plugin (it replaces what the old `/setup` command
+  applied), so hand-configuring users can copy it verbatim.
 - `hooks` are **additional** `PreToolUse` guard objects layered into `settings.json` on top
   of the plugin's always-on `hooks/hooks.json` floor. Tag each hook's `command` with a
   stable `[onboard:<tier>:<id>]` marker so re-runs dedupe idempotently.

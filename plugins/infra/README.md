@@ -117,7 +117,9 @@ Missing tools (and missing cloud credentials) are skipped gracefully — never t
 
 ## Setup
 
-Run `/setup` to automatically configure recommended permissions, or manually add to `.claude/settings.json`. The full allow-list is in [`commands/setup.md`](commands/setup.md) and includes read-only permissions for:
+Run **`/onboard`** (from the core plugin) to configure recommended permissions for infra along
+with any other installed universal-skills plugins in one guided flow. Prefer to do it by hand?
+The canonical read-only allow-list is the `balanced` tier of [`onboard-presets.json`](onboard-presets.json) — copy its `allow` entries into `.claude/settings.json`. It includes read-only permissions for:
 
 - **IaC** — `terraform`, `pulumi`, `ansible-lint`, `ansible-inventory`, `ansible-playbook --check --diff`, `kubectl get/describe/diff`, `helm lint/list/show`, `docker compose config`
 - **AWS** — `aws ec2/iam/s3api/rds/elbv2/cloudformation/backup describe-* | get-* | list-*`, `aws securityhub/guardduty/inspector2 get-findings | list-findings`, `aws resourcegroupstaggingapi get-resources`, `aws accessanalyzer list-findings`, `aws support describe-trusted-advisor-checks`

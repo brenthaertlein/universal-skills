@@ -1,6 +1,6 @@
 {
   "plugin": "webapp",
-  "description": "Risk-tiered allowlist + extra PreToolUse guard hooks for the webapp plugin. Consumed by /onboard. balanced mirrors plugins/webapp/commands/setup.md. cautious narrows to fast read-only checks; permissive adds broader build/test probes. Hooks hard-block publish/migration/expensive mutations per tier on top of the plugin floor.",
+  "description": "Risk-tiered allowlist + extra PreToolUse guard hooks for the webapp plugin. Consumed by /onboard. balanced is the canonical read-only webapp allowlist (it replaces the old /setup command). cautious narrows to fast read-only checks; permissive adds broader build/test probes. Hooks hard-block publish/migration/expensive mutations per tier on top of the plugin floor.",
   "tiers": {
     "cautious": {
       "allow": [

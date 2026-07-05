@@ -50,9 +50,11 @@ rationale, calibrates a **cautious / balanced / permissive** risk tier into a co
 allowlist plus extra guard hooks, and scaffolds or merges your `CLAUDE.md`. It is
 re-runnable — a second run detects the existing config and merges rather than overwrites.
 
-Prefer a quick per-plugin setup? Each plugin also ships a `/setup` command that adds the
-recommended read-only tool permissions to `.claude/settings.json`. Mutating operations are
-intentionally excluded and will always prompt for approval.
+`/onboard` covers every installed universal-skills plugin and replaces the old per-plugin
+`/setup` commands. Prefer to configure by hand? Each plugin's canonical read-only allow-list
+is the `balanced` tier of its `onboard-presets.json` — copy the `allow` entries into
+`.claude/settings.json`. Mutating operations are intentionally excluded and always prompt for
+approval.
 
 ### Cursor (IDE & CLI)
 
@@ -82,7 +84,7 @@ ln -sfn "$REPO/plugins/webapp" ~/.cursor/plugins/local/webapp
 
 Restart Cursor or run **Developer: Reload Window**.
 
-**Commands / `/setup`:** Slash commands reference paths like `.claude/settings.json`; on Cursor-only workflows you configure tool permissions under **Cursor Settings** as usual — see [Plugins](https://cursor.com/docs/plugins.md) and CLI [configuration](https://cursor.com/docs/cli/reference/configuration.md) if you rely on **`agent`**.
+**Commands / `/onboard`:** Slash commands reference paths like `.claude/settings.json`; on Cursor-only workflows you configure tool permissions under **Cursor Settings** as usual — see [Plugins](https://cursor.com/docs/plugins.md) and CLI [configuration](https://cursor.com/docs/cli/reference/configuration.md) if you rely on **`agent`**.
 
 ### GitHub Copilot CLI
 

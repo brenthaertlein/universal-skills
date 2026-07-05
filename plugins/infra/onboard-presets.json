@@ -1,6 +1,6 @@
 {
   "plugin": "infra",
-  "description": "Risk-tiered allowlist + extra PreToolUse guard hooks for the infra plugin. Consumed by /onboard. balanced mirrors plugins/infra/commands/setup.md. cautious narrows to local static validation + read-only cloud describe/get/list; permissive adds broader read-only probes. Hooks hard-block infra mutations per tier on top of the plugin floor.",
+  "description": "Risk-tiered allowlist + extra PreToolUse guard hooks for the infra plugin. Consumed by /onboard. balanced is the canonical read-only infra allowlist (it replaces the old /setup command). cautious narrows to local static validation + read-only cloud describe/get/list; permissive adds broader read-only probes. Hooks hard-block infra mutations per tier on top of the plugin floor.",
   "tiers": {
     "cautious": {
       "allow": [
