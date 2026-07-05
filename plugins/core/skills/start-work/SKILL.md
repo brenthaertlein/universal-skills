@@ -227,13 +227,16 @@ How to test end-to-end:
 
 ## Phase 6: Present Plan & Prompt
 
-Display the full plan, then present these options:
+Display the full plan, then present these options **using `AskUserQuestion`**
+("How do you want to proceed?"). Do not render them as a prose list — this is a
+pick-one-of-N next-action choice, exactly what `AskUserQuestion` is for. Each
+option maps to a handler section below:
 
-1. **Start implementation** — Work through each step interactively
-2. **Start with auto edits** — Implement full plan, only pause for risky operations
-3. **Chat about the plan** — Discuss before committing to it
-4. **Revise with feedback** — Refine the plan based on user input
-5. **Cancel** — Stop (plan file remains for later)
+- **Start implementation** — work through each step interactively (Option 1)
+- **Start with auto edits** — implement the full plan, pausing only for risky operations (Option 2)
+- **Chat about the plan** — discuss before committing to it (Option 3)
+- **Revise with feedback** — refine the plan based on your input (Option 4)
+- **Cancel** — stop; the plan file remains for later (Option 5)
 
 ### Journaling the session (Options 1 & 2)
 
