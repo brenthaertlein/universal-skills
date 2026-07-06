@@ -1,6 +1,6 @@
 {
   "name": "webapp",
-  "version": "1.2.0",
+  "version": "1.3.0",
   "description": "Web application development skills — API review, architecture review, testing, coverage, migrations, design tokens, and a principal-frontend reviewer agent. Optimized for Next.js / TypeScript / React full-stack development.",
   "author": {
     "name": "Brent Haertlein"

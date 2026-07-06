@@ -1,6 +1,6 @@
 {
   "name": "infra",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Enterprise infrastructure skills for Claude Code — IaC validation, drift/cost/vulnerability triage, cloud IAM and Well-Architected reviews (AWS, GCP, Kubernetes), and baremetal hardening. For sysadmins, DevOps, and SREs.",
   "author": {
     "name": "Brent Haertlein"
