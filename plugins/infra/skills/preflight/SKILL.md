@@ -16,7 +16,7 @@ Validate infrastructure-as-code changes without committing. This is a **read-onl
 
 ## Invocation
 
-The user runs `/preflight` to validate all changed IaC files in the working tree.
+The user runs `/preflight` to validate all IaC files changed on the current branch — committed, uncommitted, and untracked.
 
 ## Execution Steps
 
@@ -24,7 +24,27 @@ Run checks in the following order. For each check, report **PASS**, **FAIL**, **
 
 ### 1. Scope Detection
 
-Identify changed files (staged + unstaged) and categorize them into areas:
+Identify every file changed on this branch: changes already committed relative to the base branch, plus uncommitted and untracked changes in the working tree. A working-tree-only scope sees nothing once the work is committed, which is exactly when a branch is preflighted before opening a PR.
+
+**Resolve the base branch.** Use the repository's default branch, the first of these that resolves:
+
+1. `git rev-parse --abbrev-ref --verify --quiet origin/HEAD` (e.g. `origin/main`; prints nothing if unset)
+2. `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → use `origin/<name>` if `git rev-parse --verify --quiet origin/<name>` succeeds, otherwise the local `<name>`
+3. A local `main`, then `master` (`git rev-parse --verify --quiet <name>`)
+
+Do not use `@{upstream}`: once the branch is pushed, its upstream is the branch itself, and diffing against it hides every pushed commit. If nothing resolves (no remote, base branch absent), continue in **working-tree-only** mode rather than erroring.
+
+**Collect changed files.** Run each command separately:
+
+- `git diff --name-only HEAD` — staged and unstaged changes to tracked files. If the repository has no commits yet, use `git diff --cached --name-only` and `git diff --name-only` instead.
+- `git diff --name-only <base>...HEAD` — changes committed on this branch since it diverged from the base. Skip in working-tree-only mode.
+- `git status --porcelain --untracked-files=all` — keep only the `??` (untracked) entries.
+
+Union the results, de-duplicate, and drop paths that no longer exist on disk (deleted files cannot be validated).
+
+**If the set is empty**, report `No changes detected (base: <base>)` — or `(working tree only — no base branch resolved)` — and stop. Do not run the remaining checks just to mark them N/A.
+
+Categorize the changed files into areas:
 
 | Area             | File patterns                                                    |
 | ---------------- | ---------------------------------------------------------------- |
@@ -39,7 +59,7 @@ Identify changed files (staged + unstaged) and categorize them into areas:
 
 Auto-detect paths by scanning the repository structure. Do not assume any fixed directory layout.
 
-Report: list each area with the number of changed files.
+Report: the base branch used (or that the scope is working-tree-only), then each area with the number of changed files.
 
 ### 2. YAML Lint
 
@@ -93,7 +113,7 @@ Skip if no Docker Compose files changed.
 
 | Check            | Status   | Details              |
 | ---------------- | -------- | -------------------- |
-| Scope Detection  | PASS     | 12 files in 3 areas  |
+| Scope Detection  | PASS     | 12 files in 3 areas (base: origin/main) |
 | YAML Lint        | PASS     | 4/4 files valid      |
 | Terraform        | FAIL     | fmt: 2 files need formatting |
 | Ansible          | SKIPPED  | ansible-lint not installed |

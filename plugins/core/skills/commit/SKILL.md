@@ -37,23 +37,34 @@ git status
 git diff --stat
 ```
 
+**Resolve the base branch.** Use the repository's default branch, the first of these that resolves:
+
+1. `git rev-parse --abbrev-ref --verify --quiet origin/HEAD` (e.g. `origin/main`; prints nothing if unset)
+2. `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → use `origin/<name>` if `git rev-parse --verify --quiet origin/<name>` succeeds, otherwise the local `<name>`
+3. A local `main`, then `master` (`git rev-parse --verify --quiet <name>`)
+
+Do not use `@{upstream}`: once the branch is pushed, its upstream is the branch itself, and diffing against it hides every pushed commit. If nothing resolves (no remote, base branch absent), continue in **working-tree-only** mode rather than erroring.
+
+Count commits ahead of the base with `git log --oneline <base>..HEAD` (in working-tree-only mode, treat it as zero).
+
 - **If there are unstaged or untracked changes:** Show a summary of what changed (files modified, added, deleted). Ask the user ONE question: "Stage all changes, or should I pick the relevant ones?" Then stage accordingly.
   - If **all**: stage everything.
   - If **pick**: select files aligned with the branch's purpose, explain what was excluded and why.
-- **If working copy is clean AND no commits ahead of main:** Report "Nothing to commit." and stop.
-- **If working copy is clean BUT commits exist ahead of main:** Report "Working copy is clean — nothing new to commit. Use `/ship-it` to push existing commits." and stop.
+- **If working copy is clean AND no commits ahead of the base branch:** Report "Nothing to commit." and stop.
+- **If working copy is clean BUT commits exist ahead of the base branch:** Report "Working copy is clean — nothing new to commit. Use `/ship-it` to push existing commits." and stop.
 
 ### 3. Preflight Checks
 
-Run project-defined checks scoped to staged changes. The specific checks come from CLAUDE.md or project configuration — this skill defines the workflow, not the tools.
+Run project-defined checks scoped to this branch's changes — what is about to be committed plus what was already committed on the branch. The specific checks come from CLAUDE.md or project configuration — this skill defines the workflow, not the tools.
 
 #### 3a. Scope detection
 
-```bash
-git diff --cached --name-only
-```
+Run each command separately:
 
-Categorize staged files by directory and extension. Only run checks relevant to the changed file types.
+- `git diff --name-only HEAD` — staged and unstaged changes to tracked files. If the repository has no commits yet, use `git diff --cached --name-only` and `git diff --name-only` instead.
+- `git diff --name-only <base>...HEAD` — changes committed on this branch since it diverged from the base (from step 2). Skip in working-tree-only mode.
+
+Union the results, de-duplicate, and drop paths that no longer exist on disk. Earlier commits on the branch stay in scope, so the checks cover the whole branch rather than only the latest increment. Categorize the files by directory and extension. Only run checks relevant to the changed file types.
 
 #### 3b. Run project checks
 
@@ -62,7 +73,7 @@ Read CLAUDE.md for the project's defined check commands. Common categories:
 - **Linting / formatting** — run the project's lint and format commands
 - **Type checking** — run the project's type checker if applicable
 - **Unit tests** — run the project's test suite
-- **Integration / E2E tests** — run if the project defines them and staged changes affect testable code
+- **Integration / E2E tests** — run if the project defines them and the changed files (step 3a) affect testable code
 - **Validation** — run any project-specific validation (schema validation, config checks, etc.)
 
 For each category:
@@ -114,7 +125,7 @@ After successful commit, report:
 Next: Run /ship-it to push.
 ```
 
-List each check category that was evaluated. PASS means it passed, FIXED means `--fix` resolved issues, SKIPPED means the check was not relevant to staged files, N/A means no command is defined for that category.
+List each check category that was evaluated. PASS means it passed, FIXED means `--fix` resolved issues, SKIPPED means the check was not relevant to the changed files, N/A means no command is defined for that category.
 
 ## Supporting Skills Integration
 
