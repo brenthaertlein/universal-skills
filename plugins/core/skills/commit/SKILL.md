@@ -37,13 +37,13 @@ git status
 git diff --stat
 ```
 
-**Resolve the base branch.** Use the repository's default branch, the first of these that resolves:
+**Resolve the base branch.** Use the repository's default branch. Run one command per step and stop at the first that resolves:
 
 1. `git rev-parse --abbrev-ref --verify --quiet origin/HEAD` (e.g. `origin/main`; prints nothing if unset)
-2. `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → use `origin/<name>` if `git rev-parse --verify --quiet origin/<name>` succeeds, otherwise the local `<name>`
+2. `gh repo view --json defaultBranchRef --jq .defaultBranchRef.name` → use `origin/<name>` if `git rev-parse --verify --quiet origin/<name>` succeeds, otherwise the local `<name>`. If `gh` is missing, unauthenticated, or offline, skip to step 3.
 3. A local `main`, then `master` (`git rev-parse --verify --quiet <name>`)
 
-Do not use `@{upstream}`: once the branch is pushed, its upstream is the branch itself, and diffing against it hides every pushed commit. If nothing resolves (no remote, base branch absent), continue in **working-tree-only** mode rather than erroring.
+Do not use `@{upstream}`: once the branch is pushed, its upstream is the branch itself, and diffing against it hides every pushed commit. Continue in **working-tree-only** mode rather than erroring if nothing resolves (no remote, base branch absent) or if HEAD has no commits yet (`git rev-parse --verify --quiet HEAD` prints nothing: a new repository or an orphan branch).
 
 Count commits ahead of the base with `git log --oneline <base>..HEAD` (in working-tree-only mode, treat it as zero).
 
@@ -61,8 +61,10 @@ Run project-defined checks scoped to this branch's changes — what is about to 
 
 Run each command separately:
 
-- `git diff --name-only HEAD` — staged and unstaged changes to tracked files. If the repository has no commits yet, use `git diff --cached --name-only` and `git diff --name-only` instead.
+- `git diff --cached --name-only` — what is about to be committed. Step 2 has already staged it: **all** stages every change, and files left out under **pick** were excluded on purpose, so they stay out of scope.
 - `git diff --name-only <base>...HEAD` — changes committed on this branch since it diverged from the base (from step 2). Skip in working-tree-only mode.
+
+Git quotes unusual paths: `git status` wraps paths with spaces in double quotes, and any listing escapes non-ASCII names as octal (`"dir/\303\274ber.yml"`). Unquote them before use; never drop an entry because its quoted form does not exist on disk.
 
 Union the results, de-duplicate, and drop paths that no longer exist on disk. Earlier commits on the branch stay in scope, so the checks cover the whole branch rather than only the latest increment. Categorize the files by directory and extension. Only run checks relevant to the changed file types.
 
