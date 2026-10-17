@@ -39,7 +39,7 @@ Run `/commit`'s Steps 1-5, with the session-journal finalize inserted before sta
 
 If any of `/commit`'s steps would stop (branch policy violation, preflight failure, nothing to commit), stop here too.
 
-If the working copy is clean but there ARE commits ahead of main, skip to step 2 — the work is already committed.
+If the working copy is clean but there ARE commits ahead of main, still run the journal finalize (step 1.2) first — a prior `/commit` cannot have recorded final outcomes. If that changes the journal, continue through steps 1.3-1.6 to commit it; otherwise skip to step 2 — the work is already committed.
 
 ### 2. Push
 

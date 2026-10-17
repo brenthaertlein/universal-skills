@@ -90,7 +90,7 @@ git branch -a --list "*<keyword>*"
 
 For each matching branch, check PR status:
 ```bash
-gh pr list --head "<branch>" --json number,title,state,url
+gh pr list --head "<branch>" --state all --json number,title,state,url
 ```
 
 Classify each branch by its PR state:
@@ -227,7 +227,7 @@ Extracted from the issue/doc and questionnaire:
 
 | File | Action | Reason |
 |------|--------|--------|
-| `docs/issues/<number>-<slug>.md` | Create/Modify | Session journal (see "Journaling the session") |
+| `docs/issues/<number>-<slug>.md` (or `docs/issues/<slug>.md` without an issue) | Create/Modify | Session journal (see "Journaling the session") |
 | `path/to/file` | Create/Modify | <reason> |
 
 ## Verification
@@ -269,16 +269,21 @@ skill seeds the file, it does not restate the template.
 being resumed — before working any step**, initiate the journal. Do not ask
 first; this is a required step, not a decision:
 
-1. Look for an existing `docs/issues/{number}-*.md` doc (issue-based work). Match
-   on the issue number, not an exact slug: `/document` may have created the doc
-   with a different slug. If one exists, reuse it and append to it.
-2. If none exists, create `docs/issues/{number}-{slug}.md` immediately. Derive
-   `{slug}` from the issue title (kebab-case, 2-4 words) per `/document`'s
-   convention, and use `/document`'s issue-doc format as the template. Seed it
+1. Resolve the journal path:
+   - **Issue-based work** — look for an existing `docs/issues/{number}-*.md`.
+     Match on the issue number, not an exact slug: `/document` may have created
+     the doc with a different slug. If none exists, the path is
+     `docs/issues/{number}-{slug}.md`, with `{slug}` derived from the issue title
+     (kebab-case, 2-4 words) per `/document`'s convention.
+   - **No issue** (planning doc, keyword, or free-text task) — the path is
+     `docs/issues/{slug}.md`, using the plan's `<slug>` from Phase 5b. Match an
+     existing doc on that exact slug.
+2. If a doc exists at that path, reuse it and append to it. Otherwise create it
+   immediately, using `/document`'s issue-doc format as the template. Seed it
    with the session intent from the approved plan — what this work is, why, and
-   the approach chosen — populated from the issue body, comments, Phase 3
-   exploration, and Phase 4 answers, leaving room for a running work log and a
-   final outcomes section.
+   the approach chosen — populated from the work item (issue body and comments,
+   or the source doc / task description), Phase 3 exploration, and Phase 4
+   answers, leaving room for a running work log and a final outcomes section.
 3. For **software / feature work**, also bring the `docs/features/` entry for the
    area being changed up to date, delegating format and creation to `/document`:
    create `docs/features/{name}.md` for a new feature or an enhancement to an
@@ -303,27 +308,39 @@ the diff. This running work log is what the journal exists to hold.
      ```bash
      git worktree add .worktrees/<branch-with-slashes-as-dashes> -b <branch> origin/main
      ```
-     Then copy env files and install dependencies as `/checkout` steps 4-5 describe.
+     `cd` into the worktree, then copy env files and install dependencies as
+     `/checkout` steps 4-5 describe — both assume the worktree is the current
+     directory.
    - If the worktree already exists, use it — never delete or recreate it.
 
-   `cd` into the worktree; all subsequent work happens there.
-2. Run the project's checks as a baseline (see `/commit` preflight). If they
+   All subsequent work happens inside the worktree.
+2. Transfer this task's untracked artifacts into the worktree — `git worktree add`
+   does not carry gitignored files, and `/commit` and `/pr-fix` look for them
+   relative to the worktree:
+   - `.plans/<slug>.md` (the approved plan)
+   - `.scope/<branch>.md` (the scope contract, if one was extracted)
+
+   Copy each from the main checkout to the same relative path in the worktree.
+   If the worktree already has a copy that differs, ask with `AskUserQuestion`
+   which version to keep — never overwrite it silently. Afterwards, edit only
+   the worktree's copy.
+3. Run the project's checks as a baseline (see `/commit` preflight). If they
    already fail, report the failures and ask with `AskUserQuestion` whether to
    proceed or investigate first — so pre-existing failures are not later
    mistaken for regressions.
-3. Initiate the session journal — see "Journaling the session (Options 1 & 2)" above.
-4. Work through each step, briefly summarize after each — and record meaningful
+4. Initiate the session journal — see "Journaling the session (Options 1 & 2)" above.
+5. Work through each step, briefly summarize after each — and record meaningful
    decisions, approaches considered, and the rationale behind developer + AI
    choices in the session journal as you go.
-5. If `superpowers:test-driven-development` is available, apply the TDD cycle for
+6. If `superpowers:test-driven-development` is available, apply the TDD cycle for
    each implementation step — write the failing test first, verify it fails,
    implement minimum to pass, verify it passes.
-6. Run project-defined checks after completing all steps
-7. Do NOT commit — suggest `/commit` when ready
+7. Run project-defined checks after completing all steps
+8. Do NOT commit — suggest `/commit` when ready
 
 ### Option 2 — Auto edits:
 
-Same setup as Option 1 (worktree, baseline checks, session journal), then
+Same setup as Option 1 (worktree, artifact transfer, baseline checks, session journal), then
 implement every step without pausing, except for:
 - Destructive or risky operations
 - Flagged decision points from the plan's "Risks & Open Questions"
@@ -364,7 +381,7 @@ Stop. Plan file remains at `.plans/<slug>.md` for later use.
 - Respect existing branches — offer to reuse one only when it has an **open** PR; for merged or closed PRs, always start a fresh branch from `origin/main`
 - Do not over-explore — Phase 3 should take 2-3 minutes, not 10
 - Plan file is persistent — do not delete after implementation
-- Maintain the session journal — `docs/issues/{number}-*.md` is a living
+- Maintain the session journal — `docs/issues/{number}-*.md` (or `docs/issues/{slug}.md` without an issue) is a living
   record of intent, decisions, and outcomes; keep it current as work progresses
   (see "Journaling the session"). Required: create it without asking.
 - Batch edits — do not commit after every small change
