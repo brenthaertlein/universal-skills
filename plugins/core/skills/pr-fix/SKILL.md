@@ -119,7 +119,10 @@ After the user selects a category:
 2. Apply the fixes for the selected issues
 3. Run the project's lint/format tooling to clean up any issues introduced by fixes (check CLAUDE.md for project-specific commands)
 4. Run the project's test suite to verify nothing is broken (check CLAUDE.md for project-specific commands)
-5. Report which issues were fixed and which remain
+5. Update the session journal — if this branch has a `docs/issues/` or
+   `docs/features/` doc (see `/document`), append what this round addressed,
+   rejected, or deferred, and why. Do it, don't ask; it lands in the step 7 commit.
+6. Report which issues were fixed and which remain
 
 Do NOT commit yet -- that happens in step 7.
 
@@ -323,6 +326,7 @@ If tests failed and could not be resolved, always mark as not ready regardless o
 - **Step 7 always commits and pushes when there are local changes** -- never resolve threads, post replies, or post the summary while uncommitted fix code sits in the working tree. The only optional gate in step 7 is the "Wait / Push now" question when CI checks are in-flight.
 - If the test suite fails after fixes, report the failure and attempt to resolve it
 - **Update the `docs/` journal before closing the loop** — if this branch has a
-  `docs/issues/` or `docs/features/` doc (see `/document`), nudge the user to
-  record what was addressed in this round. Soft reminder, never a blocking gate.
+  `docs/issues/` or `docs/features/` doc (see `/document`), record what was
+  addressed in this round as part of step 6. Required, done without asking — it
+  is a workflow step, not a decision.
 - **Never `@` mention bots or users** in the summary comment. Use plain names -- `@` mentions can trigger bot actions or unwanted notifications.
