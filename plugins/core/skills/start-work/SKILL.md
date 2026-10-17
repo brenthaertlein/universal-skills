@@ -40,6 +40,9 @@ invoke `feature-dev:feature-dev`. Do not proceed with Phases 3–6.
 If **Brainstorm** chosen: pass work item summary as context, invoke
 `superpowers:brainstorming`. Do not proceed with Phases 3–6.
 
+Either route still owns the session journal: once the branch enters active use,
+initiate it exactly as "Journaling the session" describes — no prompt.
+
 ## Phase 1: Parse Input & Fetch Context
 
 Accept flexible input:
@@ -55,6 +58,9 @@ gh issue view <number> --json number,title,body,labels,assignees,comments,state
 ```
 
 Display issue summary: number, title, state, labels, and body excerpt.
+
+If the issue is closed, warn the user and ask with `AskUserQuestion` whether to
+proceed or cancel.
 
 ### 1b. If file path or keyword:
 
@@ -84,16 +90,21 @@ git branch -a --list "*<keyword>*"
 
 For each matching branch, check PR status:
 ```bash
-gh pr list --head "<branch>" --json number,title,state,url
+gh pr list --head "<branch>" --state all --json number,title,state,url
 ```
 
-If an open PR exists, highlight it — the user may want to continue rather than start fresh.
+Classify each branch by its PR state:
+- **Open** — active in-progress work. Highlight it prominently; the user may want to continue rather than start fresh.
+- **Merged** — completed work. Do not offer it as a starting point.
+- **Closed (not merged)** — abandoned work. Note it, but do not reuse it.
 
 ### 2b. Find related commits:
 
 ```bash
 git log --all --oneline --grep="<keyword>" -10
 ```
+
+For issue-based work, also grep for `#<number>` so commits that reference the issue are not missed.
 
 ### 2c. Check for related issues:
 
@@ -107,6 +118,7 @@ Based on the work item content, use Grep and Glob to find:
 - Config files that would need changes
 - Existing code in the same area
 - Related files based on keywords from the work item
+- `TODO` / `FIXME` comments that reference the issue number
 
 Present related work summary to the user.
 
@@ -136,12 +148,17 @@ Rules:
 - Always ask at least 2 questions, never more than 4
 - Each question should have 2-4 concrete options
 - Questions must be specific to the work item, not boilerplate
+- Never ask a question the issue, its comments, or CLAUDE.md already answers
+- Never ask about required workflow steps (the session journal, worktree setup, baseline checks) — those are not decisions
+- If the work item is straightforward and unambiguous, ask about scope depth and verification approach
 
 ## Phase 5: Draft Plan
 
 ### 5a. Validate the proposed branch name (soft check)
 
 Before writing the plan file, validate the branch name you're about to record in the plan's `**Branch**:` field.
+
+Propose `{type}/{number}-{slug}` for issue-based work (`{type}/{slug}` otherwise), where `{slug}` is a 2-4 word kebab-case summary of the title. Pick `{type}` from the nature of the work: `fix` for bugs and regressions, `feat` for new behavior, `docs`, `test`, `refactor` (no behavior change), `perf`, `chore` / `build` for deps and config, `ci` for pipelines. Never use an auto-generated name (e.g. `claude/<adjective>-<noun>-<hex>`) — always pass an explicit branch name.
 
 **Default regex:** `^(feat|fix|chore|docs|refactor|test|perf|build|ci|style)/(?:[0-9]+-)?[a-z0-9][a-z0-9-]*$`
 
@@ -161,7 +178,7 @@ Never reject silently. Never block.
 
 ### 5b. Write the plan file
 
-Create `.plans/` directory if needed, then write to `.plans/<slug>.md`:
+Create `.plans/` directory if needed, then write to `.plans/<slug>.md`. Use the same `<slug>` as the branch (with the issue number prefix, minus the type prefix — e.g. `fix/42-auth-redirect` → `.plans/42-auth-redirect.md`) so plan and branch are easy to correlate:
 
 ```markdown
 # Plan: <Title>
@@ -210,6 +227,7 @@ Extracted from the issue/doc and questionnaire:
 
 | File | Action | Reason |
 |------|--------|--------|
+| `docs/issues/<number>-<slug>.md` (or `docs/issues/<slug>.md` without an issue) | Create/Modify | Session journal (see "Journaling the session") |
 | `path/to/file` | Create/Modify | <reason> |
 
 ## Verification
@@ -240,40 +258,39 @@ option maps to a handler section below:
 
 ### Journaling the session (Options 1 & 2)
 
-`/start-work` opens the working journal that `/document` formalizes. Treat it as a
-**living document** — seeded with intent here, grown with decisions as work
-progresses, and finalized with outcomes at `/pr-fix` and `/ship-it`. `/document`
-remains the source of truth for the doc *format*; this skill detects the gap and
-seeds the file, it does not restate the template.
+`/start-work` opens the working journal that `/document` formalizes. The journal
+is a **required** part of the workflow, not an optional extra — create it without
+asking. Treat it as a **living document**: seeded with intent here, grown with
+decisions as work progresses, and finalized with outcomes at `/pr-fix` and
+`/ship-it`. `/document` remains the source of truth for the doc *format*; this
+skill seeds the file, it does not restate the template.
 
 **When the branch enters active use — whether newly created or an existing one
-being resumed — before working any step**, initiate the journal:
+being resumed — before working any step**, initiate the journal. Do not ask
+first; this is a required step, not a decision:
 
-1. Check whether a `docs/issues/{number}-*.md` doc already exists (issue-based
-   work). Match on the issue number, not an exact slug: `/document` may have
-   created the doc with a different slug, and matching the exact
-   `{number}-{slug}.md` would miss it and spawn a duplicate. Only when creating a
-   new doc, derive `{slug}` from the issue title (kebab-case, 2-4 words) per
-   `/document`'s convention.
-2. If it does not exist, soft-prompt with `AskUserQuestion` — never block:
-   - **Create journal now** — seed `docs/issues/{number}-{slug}.md` with the
-     session intent from the approved plan (what this work is, why, and the
-     approach chosen), leaving room for a running work log and a final outcomes
-     section. Use `/document`'s issue-doc format as the canonical template.
-   - **Already covered elsewhere** — a doc for this work exists under another
-     path; record where and proceed.
-   - **Skip for now** — proceed without one; the reminders in `/pr-fix` and
-     `/ship-it` will resurface it.
-3. For **software / feature work**, also check whether a `docs/features/` entry
-   exists for the area being changed, then either:
-   - **New feature** — create `docs/features/{name}.md`;
-   - **Enhancement to a documented feature** — update the existing concept doc;
-   - **Enhancement to an undocumented feature** — create a scoped
-     `docs/features/` doc.
-
-   Delegate the actual format and creation to `/document`. Skip this entirely for
-   skill, documentation, or CI/config-only changes — `/document` excludes those,
-   so there is nothing to document as a feature.
+1. Resolve the journal path:
+   - **Issue-based work** — look for an existing `docs/issues/{number}-*.md`.
+     Match on the issue number, not an exact slug: `/document` may have created
+     the doc with a different slug. If none exists, the path is
+     `docs/issues/{number}-{slug}.md`, with `{slug}` derived from the issue title
+     (kebab-case, 2-4 words) per `/document`'s convention.
+   - **No issue** (planning doc, keyword, or free-text task) — the path is
+     `docs/issues/{slug}.md`, using the plan's `<slug>` from Phase 5b. Match an
+     existing doc on that exact slug.
+2. If a doc exists at that path, reuse it and append to it. Otherwise create it
+   immediately, using `/document`'s issue-doc format as the template. Seed it
+   with the session intent from the approved plan — what this work is, why, and
+   the approach chosen — populated from the work item (issue body and comments,
+   or the source doc / task description), Phase 3 exploration, and Phase 4
+   answers, leaving room for a running work log and a final outcomes section.
+3. For **software / feature work**, also bring the `docs/features/` entry for the
+   area being changed up to date, delegating format and creation to `/document`:
+   create `docs/features/{name}.md` for a new feature or an enhancement to an
+   undocumented one; update the existing concept doc for an enhancement to a
+   documented one. Skip this entirely for skill, documentation, or
+   CI/config-only changes — `/document` excludes those, so there is nothing to
+   document as a feature.
 
 As you work through the plan's steps, append the meaningful decisions, approaches
 considered, and rationale (developer and AI) to the journal — the *why*, not just
@@ -281,34 +298,73 @@ the diff. This running work log is what the journal exists to hold.
 
 ### Option 1 — Start implementation:
 
-1. Check for existing branches, offer to reuse or create new from `origin/main`
-2. `git fetch origin main && git checkout -b <branch> origin/main`
-3. Initiate the session journal — see "Journaling the session (Options 1 & 2)" above.
-4. Work through each step, briefly summarize after each — and record meaningful
+1. Set up an isolated worktree — never switch branches in the main working tree:
+   - If Phase 2 found an existing branch with an **open** PR, reuse it via the
+     `/checkout` flow (`.worktrees/<branch-with-slashes-as-dashes>`).
+   - Otherwise, create a fresh branch from the latest default branch:
+     ```bash
+     git fetch origin main
+     ```
+     ```bash
+     git worktree add .worktrees/<branch-with-slashes-as-dashes> -b <branch> origin/main
+     ```
+     `cd` into the worktree, then copy env files and install dependencies as
+     `/checkout` steps 4-5 describe — both assume the worktree is the current
+     directory.
+   - If the worktree already exists, use it — never delete or recreate it.
+
+   All subsequent work happens inside the worktree.
+2. Transfer this task's untracked artifacts into the worktree — `git worktree add`
+   does not carry gitignored files, and `/commit` and `/pr-fix` look for them
+   relative to the worktree:
+   - `.plans/<slug>.md` (the approved plan)
+   - `.scope/<branch>.md` (the scope contract, if one was extracted)
+
+   Copy each from the main checkout to the same relative path in the worktree.
+   If the worktree already has a copy that differs, ask with `AskUserQuestion`
+   which version to keep — never overwrite it silently. Afterwards, edit only
+   the worktree's copy.
+3. Run the project's checks as a baseline (see `/commit` preflight). If they
+   already fail, report the failures and ask with `AskUserQuestion` whether to
+   proceed or investigate first — so pre-existing failures are not later
+   mistaken for regressions.
+4. Initiate the session journal — see "Journaling the session (Options 1 & 2)" above.
+5. Work through each step, briefly summarize after each — and record meaningful
    decisions, approaches considered, and the rationale behind developer + AI
    choices in the session journal as you go.
-5. If `superpowers:test-driven-development` is available, apply the TDD cycle for
+6. If `superpowers:test-driven-development` is available, apply the TDD cycle for
    each implementation step — write the failing test first, verify it fails,
    implement minimum to pass, verify it passes.
-6. Run project-defined checks after completing all steps
-7. Do NOT commit — suggest `/commit` when ready
+7. Run project-defined checks after completing all steps
+8. Do NOT commit — suggest `/commit` when ready
 
 ### Option 2 — Auto edits:
 
-Same as Option 1 but only pause for:
+Same setup as Option 1 (worktree, artifact transfer, baseline checks, session journal), then
+implement every step without pausing, except for:
 - Destructive or risky operations
 - Flagged decision points from the plan's "Risks & Open Questions"
 - Anything requiring credentials or manual access
 
 If `superpowers:test-driven-development` is available, apply the TDD cycle for each implementation step (same as Option 1).
 
+Run project-defined checks at the end. If they fail, attempt to fix the
+failures, then present a summary of all changes made. Do NOT commit — suggest
+`/commit` when ready.
+
 ### Option 3 — Chat about the plan:
 
-Enter discussion mode. Answer questions, explain reasoning, adjust scope.
+Enter discussion mode. Answer questions, explain reasoning, adjust scope. When
+the user is ready to proceed, re-present the Phase 6 options.
 
 ### Option 4 — Revise with feedback:
 
-Accept feedback, update the plan file, re-present.
+1. Collect feedback with `AskUserQuestion`, offering common revision types
+   ("Narrow the scope", "Change the approach", "Add more detail") alongside
+   free text.
+2. Update the plan file with `Edit`, then re-display the plan and re-present the
+   Phase 6 options.
+3. After 3 revision cycles, suggest the user edit the plan file directly.
 
 ### Option 5 — Cancel:
 
@@ -317,15 +373,17 @@ Stop. Plan file remains at `.plans/<slug>.md` for later use.
 ## Safety Rules
 
 - Always branch from latest `origin/main` (or the project's default branch)
+- Always use a worktree under `.worktrees/` — never switch branches in the main working tree, which must stay on the default branch
 - Never commit without being asked — suggest `/commit` when ready
 - Never push without asking
 - Never amend commits
-- Respect existing branches — offer to reuse if an open PR exists
+- Never run destructive operations (`rm -rf`, `git reset --hard`, `git checkout .`) without an explicit user request
+- Respect existing branches — offer to reuse one only when it has an **open** PR; for merged or closed PRs, always start a fresh branch from `origin/main`
 - Do not over-explore — Phase 3 should take 2-3 minutes, not 10
 - Plan file is persistent — do not delete after implementation
-- Maintain the session journal — `docs/issues/{number}-*.md` is a living
+- Maintain the session journal — `docs/issues/{number}-*.md` (or `docs/issues/{slug}.md` without an issue) is a living
   record of intent, decisions, and outcomes; keep it current as work progresses
-  (see "Journaling the session"). Soft, never blocking.
+  (see "Journaling the session"). Required: create it without asking.
 - Batch edits — do not commit after every small change
 - Never print or display secrets
 - Respect any access rules or safety constraints defined in CLAUDE.md
