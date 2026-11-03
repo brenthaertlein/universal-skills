@@ -247,7 +247,9 @@ export const POST = withAuth(async (req) => {
 
 - **Never commit directly to `main`** — create a feature branch first.
 - **Always branch from latest `origin/main`** — run `git fetch origin
-  main` then `git checkout -b <branch> origin/main`.
+  main` then `git checkout --no-track -b <branch> origin/main`.
+  `--no-track` keeps the feature branch from tracking `main`; set its
+  upstream on first push with `git push -u origin <branch>`.
 - **Never push without being asked** — the user decides when to push.
 - **Never amend commits** — create new commits.
 - **Never run destructive git operations** without explicit user request
