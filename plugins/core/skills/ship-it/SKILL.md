@@ -21,7 +21,7 @@ Run `/commit`'s Steps 1-5, with the session-journal finalize inserted before sta
    gh pr view --json number,state,url 2>/dev/null
    ```
    If the PR state is `MERGED` or `CLOSED`, warn the user and ask with `AskUserQuestion`:
-   - **Create a new branch** (Recommended) — branch from `origin/main` with a new name, re-apply uncommitted changes
+   - **Create a new branch** (Recommended) — branch from `origin/main` with a new name (`--no-track`, so it doesn't track `main`), re-apply uncommitted changes
    - **Continue on this branch** — push new commits and create a fresh PR (the old PR will be referenced)
    - **Cancel** — stop
 

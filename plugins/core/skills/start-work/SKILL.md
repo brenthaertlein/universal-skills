@@ -306,8 +306,11 @@ the diff. This running work log is what the journal exists to hold.
      git fetch origin main
      ```
      ```bash
-     git worktree add .worktrees/<branch-with-slashes-as-dashes> -b <branch> origin/main
+     git worktree add --no-track .worktrees/<branch-with-slashes-as-dashes> -b <branch> origin/main
      ```
+     `--no-track` keeps the new branch from tracking `origin/main`, so a bare
+     `git push` or `git pull` can't target the default branch. The branch gets
+     its own upstream on first push (`git push -u origin HEAD`, as `/ship-it` does).
      `cd` into the worktree, then copy env files and install dependencies as
      `/checkout` steps 4-5 describe — both assume the worktree is the current
      directory.
@@ -373,6 +376,7 @@ Stop. Plan file remains at `.plans/<slug>.md` for later use.
 ## Safety Rules
 
 - Always branch from latest `origin/main` (or the project's default branch)
+- Never let a feature branch track a shared branch (`main`, `dev`, etc.) — create it with `--no-track`; its upstream is set on first push
 - Always use a worktree under `.worktrees/` — never switch branches in the main working tree, which must stay on the default branch
 - Never commit without being asked — suggest `/commit` when ready
 - Never push without asking
